@@ -11,27 +11,50 @@
 <body>
 
 <div class="cloud-auth-bar">
-    <div class="cloud-auth-status">
-        <span class="cloud-auth-label">☁ Account</span>
+    <div class="cloud-auth-brand">
+        <span class="cloud-auth-label">☁ COTW ACCOUNT</span>
         <span id="authStatus">Not signed in</span>
     </div>
 
-    <div class="cloud-auth-controls">
-        <input
-            id="authEmailInput"
-            type="email"
-            autocomplete="email"
-            placeholder="Email for cloud saves"
-        >
-        <button id="authButton" class="auth-button">
-            Sign In
-        </button>
-        <button
-            id="authSignOutButton"
-            class="auth-button secondary hidden"
-        >
-            Sign Out
-        </button>
+    <button id="authOpenButton" class="auth-button">
+        Sign In
+    </button>
+    <button id="authSignOutButton" class="auth-button secondary hidden">
+        Sign Out
+    </button>
+</div>
+
+<div id="authModal" class="modal hidden">
+    <div class="modal-content auth-modal">
+        <div class="modal-header">
+            <div>
+                <h2>Sign in to COTW Grind Tracker</h2>
+                <p class="auth-subtitle">One account for your grinds, logs, settings, and Great Ones.</p>
+            </div>
+            <button id="closeAuthModalButton" class="close-button">×</button>
+        </div>
+
+        <div class="auth-provider-buttons">
+            <button id="googleAuthButton" class="provider-button google">
+                <span class="provider-icon">G</span>
+                Continue with Google
+            </button>
+            <button id="appleAuthButton" class="provider-button apple">
+                <span class="provider-icon">●</span>
+                Continue with Apple
+            </button>
+        </div>
+
+        <div class="auth-divider"><span>OR</span></div>
+
+        <div class="auth-email-form">
+            <label for="authEmailInput">Continue with email</label>
+            <div class="auth-email-row">
+                <input id="authEmailInput" type="email" autocomplete="email" placeholder="you@example.com">
+                <button id="authEmailButton" class="auth-button">Continue</button>
+            </div>
+            <p class="auth-help">We'll email you a secure sign-in link. No password required.</p>
+        </div>
     </div>
 </div>
 
