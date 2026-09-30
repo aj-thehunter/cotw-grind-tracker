@@ -1104,6 +1104,44 @@ function selectGrind(id) {
 }
 
 
+function deleteGrind(grindId) {
+
+    const grind =
+        grinds.find(item => item.id === grindId);
+
+    if (!grind) {
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            `Delete the logged grind for ${grind.species} on ${grind.map}? This cannot be undone.`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    grinds =
+        grinds.filter(item => item.id !== grindId);
+
+    if (currentGrindId === grindId) {
+        const replacement =
+            grinds.find(item => !item.completed) ||
+            grinds[grinds.length - 1] ||
+            null;
+
+        currentGrindId =
+            replacement ? replacement.id : null;
+    }
+
+    saveGrinds();
+
+    updateAll();
+
+}
+
+
 /* ========================================================
    CREATE GRIND
 ======================================================== */
@@ -2976,15 +3014,43 @@ function updateSidebar() {
             grind.map;
 
 
-        button.appendChild(species);
+        const info =
+            document.createElement("div");
 
-        button.appendChild(map);
+        info.className =
+            "grind-list-info";
+
+        info.appendChild(species);
+        info.appendChild(map);
+
+        button.appendChild(info);
 
 
         button.addEventListener(
             "click",
             () => selectGrind(grind.id)
         );
+
+        if (grind.completed) {
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type = "button";
+            deleteButton.className = "grind-delete-button";
+            deleteButton.textContent = "Delete";
+            deleteButton.title = "Delete this logged grind";
+
+            deleteButton.addEventListener(
+                "click",
+                event => {
+                    event.stopPropagation();
+                    deleteGrind(grind.id);
+                }
+            );
+
+            button.appendChild(deleteButton);
+        }
 
 
         if (grind.completed) {
