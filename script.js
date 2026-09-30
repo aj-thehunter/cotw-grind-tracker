@@ -580,6 +580,9 @@ const logGreatOneButton =
 const greatOneRecords =
     document.getElementById("greatOneRecords");
 
+const greatOneSection =
+    document.getElementById("greatOneSection");
+
 const metricButton =
     document.getElementById("metricButton");
 
@@ -2280,6 +2283,32 @@ function logGreatOne() {
    GREAT ONE BUTTON STATE
 ======================================================== */
 
+function hasGreatOne(species) {
+    return Object.prototype.hasOwnProperty.call(greatOneData, species);
+}
+
+
+function updateGreatOneUI() {
+    const grind = getCurrentGrind();
+    if (!grind) return;
+
+    const isGreatOneSpecies = hasGreatOne(grind.species);
+
+    greatOnesCounter.closest(".counter-card")?.classList.toggle(
+        "hidden",
+        !isGreatOneSpecies
+    );
+
+    logGreatOneButton.textContent = isGreatOneSpecies
+        ? "Log Great One & Complete Grind"
+        : "Log Super Rare & Complete Grind";
+
+    if (typeof greatOneSection !== "undefined" && greatOneSection) {
+        greatOneSection.classList.toggle("hidden", !isGreatOneSpecies);
+    }
+}
+
+
 function updateGreatOneButton() {
 
     const grind =
@@ -2290,10 +2319,14 @@ function updateGreatOneButton() {
     }
 
 
+    const isGreatOneSpecies = hasGreatOne(grind.species);
+
     if (grind.completed) {
 
         logGreatOneButton.textContent =
-            "Great One Logged — Grind Complete";
+            isGreatOneSpecies
+                ? "Great One Logged — Grind Complete"
+                : "Super Rare Logged — Grind Complete";
 
         logGreatOneButton.disabled =
             true;
@@ -2301,7 +2334,9 @@ function updateGreatOneButton() {
     } else {
 
         logGreatOneButton.textContent =
-            "Log Great One & Complete Grind";
+            hasGreatOne(grind.species)
+                ? "Log Great One & Complete Grind"
+                : "Log Super Rare & Complete Grind";
 
         logGreatOneButton.disabled =
             false;
@@ -2909,6 +2944,8 @@ function updatePage() {
 
 
     updateCounterDisplays();
+
+    updateGreatOneUI();
 
     populateGreatOneForm();
 
