@@ -3534,6 +3534,32 @@ resetSettingsButton.addEventListener(
     resetSettings
 );
 
+if (authButton) {
+    authButton.addEventListener(
+        "click",
+        sendMagicLink
+    );
+}
+
+if (authSignOutButton) {
+    authSignOutButton.addEventListener(
+        "click",
+        signOutUser
+    );
+}
+
+if (authEmailInput) {
+    authEmailInput.addEventListener(
+        "keydown",
+        event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMagicLink();
+            }
+        }
+    );
+}
+
 
 window.addEventListener(
     "keydown",
@@ -4007,3 +4033,5 @@ updateUnitButtons();
 updateWeightUnit();
 
 updateAll();
+
+initializeCloudSync();
