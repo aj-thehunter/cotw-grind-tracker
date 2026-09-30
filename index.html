@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COTW Grind Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
+
+<div class="cloud-auth-bar">
+    <div class="cloud-auth-status">
+        <span class="cloud-auth-label">☁ Account</span>
+        <span id="authStatus">Not signed in</span>
+    </div>
+
+    <div class="cloud-auth-controls">
+        <input
+            id="authEmailInput"
+            type="email"
+            autocomplete="email"
+            placeholder="Email for cloud saves"
+        >
+        <button id="authButton" class="auth-button">
+            Sign In
+        </button>
+        <button
+            id="authSignOutButton"
+            class="auth-button secondary hidden"
+        >
+            Sign Out
+        </button>
+    </div>
+</div>
 
 <div class="app">
 
