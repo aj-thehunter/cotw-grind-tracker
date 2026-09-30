@@ -602,6 +602,18 @@ const greatOneRecords =
 const greatOneSection =
     document.getElementById("greatOneSection");
 
+const authEmailInput =
+    document.getElementById("authEmailInput");
+
+const authButton =
+    document.getElementById("authButton");
+
+const authStatus =
+    document.getElementById("authStatus");
+
+const authSignOutButton =
+    document.getElementById("authSignOutButton");
+
 const metricButton =
     document.getElementById("metricButton");
 
@@ -642,6 +654,22 @@ let grinds = [];
 let currentGrindId = null;
 
 let currentUnit = "metric";
+
+let cloudSyncTimer = null;
+let suppressCloudSync = false;
+let currentUser = null;
+
+const SUPABASE_URL =
+    "https://qfldvmxoandrvoyzvwhy.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_N8Uwp92hNBwNWcBATyvRwA_RpNf4YsZ";
+
+const supabaseClient =
+    window.supabase?.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
 
 let settings = {
 
@@ -701,6 +729,8 @@ function saveGrinds() {
         JSON.stringify(grinds)
     );
 
+    scheduleCloudSync();
+
 }
 
 
@@ -710,6 +740,8 @@ function saveSettings() {
         SETTINGS_STORAGE_KEY,
         JSON.stringify(settings)
     );
+
+    scheduleCloudSync();
 
 }
 
@@ -1000,6 +1032,15 @@ function loadGrinds() {
         saveGrinds();
     }
 
+    if (!currentGrindId && grinds.length) {
+        const firstActive =
+            grinds.find(grind => !grind.completed);
+
+        currentGrindId =
+            firstActive?.id ||
+            grinds[grinds.length - 1].id;
+    }
+
 }
 
 
@@ -1212,6 +1253,8 @@ function createGrind() {
     closeNewGrindModal();
 
     updateAll();
+
+initializeCloudSync();
 
 }
 
@@ -2775,6 +2818,8 @@ function setUnit(unit) {
         unit
     );
 
+    scheduleCloudSync();
+
 
     updateUnitButtons();
 
@@ -3596,6 +3641,351 @@ makeCounterEditable(killsCounter, "kills");
 makeCounterEditable(diamondsCounter, "diamonds");
 makeCounterEditable(trollsCounter, "trolls");
 makeCounterEditable(superRaresCounter, "superRares");
+
+
+/* ========================================================
+   SUPABASE AUTH + CLOUD SYNC
+======================================================== */
+
+function updateAuthUI() {
+
+    if (!authStatus || !authButton || !authSignOutButton) {
+        return;
+    }
+
+    if (currentUser) {
+
+        authStatus.textContent =
+            currentUser.email || "Signed in";
+
+        authButton.textContent =
+            "Cloud Sync On";
+
+        authButton.disabled = true;
+
+        authSignOutButton.classList.remove("hidden");
+
+    } else {
+
+        authStatus.textContent =
+            "Not signed in";
+
+        authButton.textContent =
+            "Sign In";
+
+        authButton.disabled = false;
+
+        authSignOutButton.classList.add("hidden");
+
+    }
+
+}
+
+
+function scheduleCloudSync() {
+
+    if (
+        !currentUser ||
+        suppressCloudSync ||
+        !supabaseClient
+    ) {
+        return;
+    }
+
+    clearTimeout(cloudSyncTimer);
+
+    cloudSyncTimer = setTimeout(
+        syncToCloud,
+        500
+    );
+
+}
+
+
+async function syncToCloud() {
+
+    if (
+        !currentUser ||
+        suppressCloudSync ||
+        !supabaseClient
+    ) {
+        return;
+    }
+
+    const payload = {
+
+        user_id:
+            currentUser.id,
+
+        grinds,
+
+        current_grind_id:
+            currentGrindId,
+
+        current_unit:
+            currentUnit,
+
+        settings,
+
+        updated_at:
+            new Date().toISOString()
+
+    };
+
+    const { error } =
+        await supabaseClient
+            .from("user_grinds")
+            .upsert(
+                payload,
+                { onConflict: "user_id" }
+            );
+
+    if (error) {
+        console.error(
+            "Cloud sync failed:",
+            error
+        );
+
+        if (authStatus) {
+            authStatus.textContent =
+                "Cloud sync error";
+        }
+
+        return;
+    }
+
+    updateAuthUI();
+
+}
+
+
+async function loadCloudData(user) {
+
+    if (!supabaseClient || !user) {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("user_grinds")
+            .select(
+                "grinds,current_grind_id,current_unit,settings"
+            )
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+    if (error) {
+        console.error(
+            "Could not load cloud data:",
+            error
+        );
+        return;
+    }
+
+    suppressCloudSync = true;
+
+    try {
+
+        if (data) {
+
+            if (Array.isArray(data.grinds)) {
+                grinds = data.grinds;
+            }
+
+            if (
+                data.current_grind_id &&
+                grinds.some(
+                    grind =>
+                        grind.id === data.current_grind_id
+                )
+            ) {
+                currentGrindId =
+                    data.current_grind_id;
+            }
+
+            if (
+                data.current_unit === "metric" ||
+                data.current_unit === "imperial"
+            ) {
+                currentUnit =
+                    data.current_unit;
+
+                localStorage.setItem(
+                    UNIT_STORAGE_KEY,
+                    currentUnit
+                );
+            }
+
+            if (
+                data.settings &&
+                typeof data.settings === "object"
+            ) {
+
+                settings = {
+                    ...settings,
+                    ...data.settings,
+                    keybinds: {
+                        ...settings.keybinds,
+                        ...(data.settings.keybinds || {})
+                    }
+                };
+
+                localStorage.setItem(
+                    SETTINGS_STORAGE_KEY,
+                    JSON.stringify(settings)
+                );
+
+            }
+
+            localStorage.setItem(
+                GRINDS_STORAGE_KEY,
+                JSON.stringify(grinds)
+            );
+
+            normalizeGreatOneNames();
+
+        } else {
+
+            /*
+               First sign-in on this device:
+               upload the existing local tracker
+               instead of replacing it with an empty
+               cloud account.
+            */
+            await syncToCloud();
+
+        }
+
+    } finally {
+
+        suppressCloudSync = false;
+
+    }
+
+    if (!currentGrindId && grinds.length) {
+
+        const firstActive =
+            grinds.find(grind => !grind.completed);
+
+        currentGrindId =
+            firstActive?.id ||
+            grinds[grinds.length - 1].id;
+
+    }
+
+    applySettings();
+    updateUnitButtons();
+    updateWeightUnit();
+    updateAll();
+
+}
+
+
+async function sendMagicLink() {
+
+    if (!supabaseClient || !authEmailInput) {
+        alert("Cloud login is not available right now.");
+        return;
+    }
+
+    const email =
+        authEmailInput.value.trim();
+
+    if (!email) {
+        alert("Enter your email address first.");
+        return;
+    }
+
+    const { error } =
+        await supabaseClient.auth.signInWithOtp({
+            email,
+            options: {
+                emailRedirectTo:
+                    window.location.origin +
+                    window.location.pathname
+            }
+        });
+
+    if (error) {
+
+        console.error(
+            "Sign-in failed:",
+            error
+        );
+
+        alert(
+            "Could not send the sign-in email: " +
+            error.message
+        );
+
+        return;
+    }
+
+    if (authStatus) {
+        authStatus.textContent =
+            "Check your email for the sign-in link.";
+    }
+
+}
+
+
+async function signOutUser() {
+
+    if (!supabaseClient) {
+        return;
+    }
+
+    await supabaseClient.auth.signOut();
+
+    currentUser = null;
+
+    updateAuthUI();
+
+}
+
+
+async function initializeCloudSync() {
+
+    if (!supabaseClient) {
+        updateAuthUI();
+        return;
+    }
+
+    const { data } =
+        await supabaseClient.auth.getSession();
+
+    if (data.session?.user) {
+
+        currentUser =
+            data.session.user;
+
+        await loadCloudData(
+            currentUser
+        );
+
+    }
+
+    updateAuthUI();
+
+    supabaseClient.auth.onAuthStateChange(
+        async (_event, session) => {
+
+            const user =
+                session?.user || null;
+
+            currentUser =
+                user;
+
+            if (user) {
+                await loadCloudData(user);
+            } else {
+                updateAuthUI();
+            }
+
+        }
+    );
+
+}
 
 
 /* ========================================================
