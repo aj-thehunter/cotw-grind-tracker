@@ -2,12 +2,15 @@ name: Build mobile app projects
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["main"]
 
 permissions:
   contents: write
 
 jobs:
   build-mobile:
+    if: ${{ !contains(github.event.head_commit.message, 'Generate iOS and Android app projects') }}
     runs-on: ubuntu-latest
 
     steps:
