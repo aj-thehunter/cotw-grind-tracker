@@ -614,9 +614,6 @@ const closeAuthModalButton =
 const googleAuthButton =
     document.getElementById("googleAuthButton");
 
-const appleAuthButton =
-    document.getElementById("appleAuthButton");
-
 const authEmailInput =
     document.getElementById("authEmailInput");
 
@@ -3561,9 +3558,6 @@ if (googleAuthButton) {
     googleAuthButton.addEventListener("click", () => signInWithProvider("google"));
 }
 
-if (appleAuthButton) {
-    appleAuthButton.addEventListener("click", () => signInWithProvider("apple"));
-}
 
 if (authEmailButton) {
     authEmailButton.addEventListener("click", sendMagicLink);
