@@ -602,11 +602,26 @@ const greatOneRecords =
 const greatOneSection =
     document.getElementById("greatOneSection");
 
+const authModal =
+    document.getElementById("authModal");
+
+const authOpenButton =
+    document.getElementById("authOpenButton");
+
+const closeAuthModalButton =
+    document.getElementById("closeAuthModalButton");
+
+const googleAuthButton =
+    document.getElementById("googleAuthButton");
+
+const appleAuthButton =
+    document.getElementById("appleAuthButton");
+
 const authEmailInput =
     document.getElementById("authEmailInput");
 
-const authButton =
-    document.getElementById("authButton");
+const authEmailButton =
+    document.getElementById("authEmailButton");
 
 const authStatus =
     document.getElementById("authStatus");
@@ -3534,30 +3549,37 @@ resetSettingsButton.addEventListener(
     resetSettings
 );
 
-if (authButton) {
-    authButton.addEventListener(
-        "click",
-        sendMagicLink
-    );
+if (authOpenButton) {
+    authOpenButton.addEventListener("click", openAuthModal);
+}
+
+if (closeAuthModalButton) {
+    closeAuthModalButton.addEventListener("click", closeAuthModal);
+}
+
+if (googleAuthButton) {
+    googleAuthButton.addEventListener("click", () => signInWithProvider("google"));
+}
+
+if (appleAuthButton) {
+    appleAuthButton.addEventListener("click", () => signInWithProvider("apple"));
+}
+
+if (authEmailButton) {
+    authEmailButton.addEventListener("click", sendMagicLink);
 }
 
 if (authSignOutButton) {
-    authSignOutButton.addEventListener(
-        "click",
-        signOutUser
-    );
+    authSignOutButton.addEventListener("click", signOutUser);
 }
 
 if (authEmailInput) {
-    authEmailInput.addEventListener(
-        "keydown",
-        event => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                sendMagicLink();
-            }
+    authEmailInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMagicLink();
         }
-    );
+    });
 }
 
 
@@ -3591,16 +3613,18 @@ newGrindModal.addEventListener(
 settingsModal.addEventListener(
     "click",
     event => {
-
-        if (
-            event.target ===
-            settingsModal
-        ) {
-
+        if (event.target === settingsModal) {
             closeSettings();
-
         }
+    }
+);
 
+authModal?.addEventListener(
+    "click",
+    event => {
+        if (event.target === authModal) {
+            closeAuthModal();
+        }
     }
 );
 
@@ -3630,13 +3654,16 @@ document.addEventListener(
 
 
         if (
-            !settingsModal.classList.contains(
-                "hidden"
-            )
+            !settingsModal.classList.contains("hidden")
         ) {
-
             closeSettings();
+        }
 
+        if (
+            authModal &&
+            !authModal.classList.contains("hidden")
+        ) {
+            closeAuthModal();
         }
 
     }
@@ -3675,40 +3702,63 @@ makeCounterEditable(superRaresCounter, "superRares");
 
 function updateAuthUI() {
 
-    if (!authStatus || !authButton || !authSignOutButton) {
+    if (!authStatus || !authOpenButton || !authSignOutButton) {
         return;
     }
 
     if (currentUser) {
-
-        authStatus.textContent =
-            currentUser.email || "Signed in";
-
-        authButton.textContent =
-            "Cloud Sync On";
-
-        authButton.disabled = true;
-
+        const email = currentUser.email || "Signed in";
+        authStatus.textContent = email;
+        authOpenButton.classList.add("hidden");
         authSignOutButton.classList.remove("hidden");
-
+        if (authModal) authModal.classList.add("hidden");
     } else {
-
-        authStatus.textContent =
-            "Not signed in";
-
-        authButton.textContent =
-            "Sign In";
-
-        authButton.disabled = false;
-
+        authStatus.textContent = "Not signed in";
+        authOpenButton.classList.remove("hidden");
         authSignOutButton.classList.add("hidden");
-
     }
 
 }
 
 
-function scheduleCloudSync() {
+function openAuthModal() {
+    if (authModal) authModal.classList.remove("hidden");
+    authEmailInput?.focus();
+}
+
+
+function closeAuthModal() {
+    if (authModal) authModal.classList.add("hidden");
+}
+
+
+async function signInWithProvider(provider) {
+
+    if (!supabaseClient) {
+        alert("Account sign-in is not available right now.");
+        return;
+    }
+
+    const redirectTo =
+        window.location.origin + window.location.pathname;
+
+    const { error } =
+        await supabaseClient.auth.signInWithOAuth({
+            provider,
+            options: {
+                redirectTo
+            }
+        });
+
+    if (error) {
+        console.error("OAuth sign-in failed:", error);
+        alert("Could not start " + (provider === "google" ? "Google" : "Apple") + " sign-in: " + error.message);
+    }
+
+}
+
+
+async function scheduleCloudSync() {
 
     if (
         !currentUser ||
@@ -3910,16 +3960,20 @@ async function loadCloudData(user) {
 async function sendMagicLink() {
 
     if (!supabaseClient || !authEmailInput) {
-        alert("Cloud login is not available right now.");
+        alert("Account sign-in is not available right now.");
         return;
     }
 
-    const email =
-        authEmailInput.value.trim();
+    const email = authEmailInput.value.trim();
 
     if (!email) {
         alert("Enter your email address first.");
         return;
+    }
+
+    if (authEmailButton) {
+        authEmailButton.disabled = true;
+        authEmailButton.textContent = "Sending…";
     }
 
     const { error } =
@@ -3927,29 +3981,28 @@ async function sendMagicLink() {
             email,
             options: {
                 emailRedirectTo:
-                    window.location.origin +
-                    window.location.pathname
+                    window.location.origin + window.location.pathname
             }
         });
 
+    if (authEmailButton) {
+        authEmailButton.disabled = false;
+        authEmailButton.textContent = "Continue";
+    }
+
     if (error) {
-
-        console.error(
-            "Sign-in failed:",
-            error
-        );
-
-        alert(
-            "Could not send the sign-in email: " +
-            error.message
-        );
-
+        console.error("Email sign-in failed:", error);
+        alert("Could not send the sign-in email: " + error.message);
         return;
     }
 
     if (authStatus) {
-        authStatus.textContent =
-            "Check your email for the sign-in link.";
+        authStatus.textContent = "Check your email for the sign-in link.";
+    }
+
+    if (authModal) {
+        const help = authModal.querySelector(".auth-help");
+        if (help) help.textContent = "Check your inbox for your secure sign-in link.";
     }
 
 }
