@@ -1141,3 +1141,33 @@ body.text-large {
         width: 100%;
     }
 }
+
+
+/* Logged grind delete controls */
+.grind-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.grind-list-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.grind-delete-button {
+    flex-shrink: 0;
+    padding: 5px 8px;
+    border: 1px solid #662222;
+    border-radius: 6px;
+    background: transparent;
+    color: #ff7777;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.grind-delete-button:hover {
+    border-color: #ff4444;
+    color: #ff4444;
+}
