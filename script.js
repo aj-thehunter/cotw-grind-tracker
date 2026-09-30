@@ -1113,9 +1113,12 @@ function deleteGrind(grindId) {
         return;
     }
 
+    const grindStatus =
+        grind.completed ? "logged" : "active";
+
     const confirmed =
         confirm(
-            `Delete the logged grind for ${grind.species} on ${grind.map}? This cannot be undone.`
+            `Delete the ${grindStatus} grind for ${grind.species} on ${grind.map}? This cannot be undone.`
         );
 
     if (!confirmed) {
@@ -3031,26 +3034,25 @@ function updateSidebar() {
             () => selectGrind(grind.id)
         );
 
-        if (grind.completed) {
+        const deleteButton =
+            document.createElement("button");
 
-            const deleteButton =
-                document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "grind-delete-button";
+        deleteButton.textContent = "Delete";
+        deleteButton.title = grind.completed
+            ? "Delete this logged grind"
+            : "Delete this active grind";
 
-            deleteButton.type = "button";
-            deleteButton.className = "grind-delete-button";
-            deleteButton.textContent = "Delete";
-            deleteButton.title = "Delete this logged grind";
+        deleteButton.addEventListener(
+            "click",
+            event => {
+                event.stopPropagation();
+                deleteGrind(grind.id);
+            }
+        );
 
-            deleteButton.addEventListener(
-                "click",
-                event => {
-                    event.stopPropagation();
-                    deleteGrind(grind.id);
-                }
-            );
-
-            button.appendChild(deleteButton);
-        }
+        button.appendChild(deleteButton);
 
 
         if (grind.completed) {
