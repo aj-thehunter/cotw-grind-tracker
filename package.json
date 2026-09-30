@@ -4,8 +4,8 @@
   "private": true,
   "description": "COTW Grind Tracker mobile and web app",
   "scripts": {
-    "build": "echo \"COTW Grind Tracker is a static web app\"",
-    "sync": "npx cap sync",
+    "build": "node build-app.mjs",
+    "sync": "npm run build && npx cap sync",
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios"
   },
