@@ -207,109 +207,135 @@ const greatOneData = {
 
 const speciesMaps = {
 
-    "Whitetail Deer": [
-        "Layton Lake District",
-        "Rancho del Arroyo",
-        "Mississippi Acres Preserve",
-        "Revontuli Coast",
-        "New England Mountains",
-        "Askiy Ridge Hunting Preserve",
-        "Intisuyu Hunting Reserve"
-    ],
-
-    "Red Deer": [
-        "Hirschfelden Hunting Reserve",
-        "Parque Fernando",
-        "Cuatro Colinas Game Reserve",
-        "Te Awaroa National Park",
-        "Emerald Coast Australia",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Black Bear": [
-        "Layton Lake District",
-        "Silver Ridge Peaks",
-        "Mississippi Acres Preserve",
-        "New England Mountains",
-        "Askiy Ridge Hunting Preserve"
-    ],
-
-    "Moose": [
-        "Layton Lake District",
-        "Medved-Taiga National Park",
-        "Yukon Valley",
-        "Revontuli Coast",
-        "New England Mountains",
-        "Askiy Ridge Hunting Preserve"
-    ],
-
-    "Fallow Deer": [
-        "Hirschfelden Hunting Reserve",
-        "Te Awaroa National Park",
-        "Emerald Coast Australia",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Himalayan Tahr": [
-        "Te Awaroa National Park",
-        "Sundarpatan Hunting Reserve"
-    ],
-
-    "Red Fox": [
-        "Hirschfelden Hunting Reserve",
-        "Yukon Valley",
-        "New England Mountains",
-        "Emerald Coast Australia",
-        "Salzwiesen Park",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Ring-Necked Pheasant": [
-        "Hirschfelden Hunting Reserve",
-        "Cuatro Colinas Game Reserve",
-        "Rancho del Arroyo",
-        "New England Mountains",
-        "Salzwiesen Park",
-        "Askiy Ridge Hunting Preserve",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Mule Deer": [
-        "Parque Fernando",
-        "Silver Ridge Peaks",
-        "Rancho del Arroyo",
-        "Askiy Ridge Hunting Preserve"
-    ],
-
-    "Gray Wolf": [
-        "Medved-Taiga National Park",
-        "Yukon Valley",
-        "Askiy Ridge Hunting Preserve"
-    ],
-
-    "Wild Boar": [
-        "Hirschfelden Hunting Reserve",
-        "Medved-Taiga National Park",
-        "Cuatro Colinas Game Reserve",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Roe Deer": [
-        "Hirschfelden Hunting Reserve",
-        "Cuatro Colinas Game Reserve",
-        "Tòrr nan Sìthean Hunting Estate"
-    ],
-
-    "Jaguar": [
-        "Intisuyu Hunting Reserve"
-    ],
-
-    "Taruca": [
-        "Intisuyu Hunting Reserve"
-    ]
+    "Canada Goose": ["Hirschfelden Hunting Reserve","Yukon Valley","Revontuli Coast","Askiy Ridge Hunting Preserve"],
+    "European Rabbit": ["Hirschfelden Hunting Reserve","Te Awaroa National Park","Revontuli Coast","Salzwiesen Park"],
+    "Ring-Necked Pheasant": ["Hirschfelden Hunting Reserve","Cuatro Colinas Game Reserve","Rancho del Arroyo","New England Mountains","Salzwiesen Park","Askiy Ridge Hunting Preserve","Tòrr nan Sìthean Hunting Reserve"],
+    "Red Fox": ["Hirschfelden Hunting Reserve","Yukon Valley","New England Mountains","Emerald Coast","Salzwiesen Park","Tòrr nan Sìthean Hunting Reserve"],
+    "Roe Deer": ["Hirschfelden Hunting Reserve","Cuatro Colinas Game Reserve","Tòrr nan Sìthean Hunting Reserve"],
+    "Fallow Deer": ["Hirschfelden Hunting Reserve","Te Awaroa National Park","Emerald Coast","Tòrr nan Sìthean Hunting Reserve"],
+    "Wild Boar": ["Hirschfelden Hunting Reserve","Medved-Taiga National Park","Cuatro Colinas Game Reserve","Tòrr nan Sìthean Hunting Reserve"],
+    "Red Deer": ["Hirschfelden Hunting Reserve","Parque Fernando","Cuatro Colinas Game Reserve","Te Awaroa National Park","Emerald Coast","Tòrr nan Sìthean Hunting Reserve"],
+    "European Bison": ["Hirschfelden Hunting Reserve"],
+    "Mallard": ["Layton Lake District","Te Awaroa National Park","Revontuli Coast","New England Mountains","Salzwiesen Park","Askiy Ridge Hunting Preserve"],
+    "Merriam Turkey": ["Layton Lake District","Silver Ridge Peaks","Te Awaroa National Park"],
+    "White Tailed Jackrabbit": ["Layton Lake District"],
+    "Coyote": ["Layton Lake District","Rancho del Arroyo","New England Mountains"],
+    "Blacktail Deer": ["Layton Lake District"],
+    "Whitetail Deer": ["Layton Lake District","Rancho del Arroyo","Mississippi Acres Preserve","Revontuli Coast","New England Mountains","Askiy Ridge Hunting Preserve","Intisuyu Hunting Reserve"],
+    "Black Bear": ["Layton Lake District","Silver Ridge Peaks","Mississippi Acres Preserve","New England Mountains","Askiy Ridge Hunting Preserve"],
+    "Roosevelt Elk": ["Layton Lake District"],
+    "Moose": ["Layton Lake District","Medved-Taiga National Park","Yukon Valley","Revontuli Coast","New England Mountains","Askiy Ridge Hunting Preserve"],
+    "Western Capercallie": ["Medved-Taiga National Park","Revontuli Coast","Tòrr nan Sìthean Hunting Reserve"],
+    "Siberian Musk Deer": ["Medved-Taiga National Park"],
+    "Eurasian Lynx": ["Medved-Taiga National Park","Revontuli Coast"],
+    "Gray Wolf": ["Medved-Taiga National Park","Yukon Valley","Askiy Ridge Hunting Preserve"],
+    "Mountain Reindeer": ["Medved-Taiga National Park"],
+    "Brown Bear": ["Medved-Taiga National Park","Revontuli Coast"],
+    "Eurasian Wigeon": ["Vurhonga Savanna Reserve","Revontuli Coast","Salzwiesen Park","Tòrr nan Sìthean Hunting Reserve"],
+    "Scrub Hare": ["Vurhonga Savanna Reserve"],
+    "Side Striped Jackal": ["Vurhonga Savanna Reserve"],
+    "Springbok": ["Vurhonga Savanna Reserve"],
+    "Lesser Kudu": ["Vurhonga Savanna Reserve"],
+    "Warthog": ["Vurhonga Savanna Reserve"],
+    "Blue Wildbeest": ["Vurhonga Savanna Reserve"],
+    "Gemsbok": ["Vurhonga Savanna Reserve"],
+    "Cape Buffalo": ["Vurhonga Savanna Reserve"],
+    "Lion": ["Vurhonga Savanna Reserve"],
+    "Cinnamon Teal": ["Parque Fernando","Intisuyu Hunting Reserve"],
+    "Axis Deer": ["Parque Fernando","Emerald Coast"],
+    "Blackbuck": ["Parque Fernando","Sundarpatan Hunting Reserve"],
+    "Collared Peccary": ["Parque Fernando","Rancho del Arroyo","Intisuyu Hunting Reserve"],
+    "Mule Deer": ["Parque Fernando","Silver Ridge Peaks","Rancho del Arroyo","Askiy Ridge Hunting Preserve"],
+    "Puma": ["Parque Fernando","Intisuyu Hunting Reserve"],
+    "Water Buffalo": ["Parque Fernando","Sundarpatan Hunting Reserve"],
+    "Harlequin Duck": ["Yukon Valley"],
+    "Grant Caribou": ["Yukon Valley"],
+    "Grizzly Bear": ["Yukon Valley"],
+    "Plains Bison": ["Yukon Valley","Silver Ridge Peaks"],
+    "European Hare": ["Cuatro Colinas Game Reserve"],
+    "Beceite Ibex": ["Cuatro Colinas Game Reserve"],
+    "Gredos Ibex": ["Cuatro Colinas Game Reserve"],
+    "Iberian Mouflon": ["Cuatro Colinas Game Reserve"],
+    "Ronda Ibex": ["Cuatro Colinas Game Reserve"],
+    "Southeastern Spanish Ibex": ["Cuatro Colinas Game Reserve"],
+    "Iberian Wolf": ["Cuatro Colinas Game Reserve"],
+    "Pronghorn": ["Silver Ridge Peaks","Rancho del Arroyo","Askiy Ridge Hunting Preserve"],
+    "Mountain Goat": ["Silver Ridge Peaks","Askiy Ridge Hunting Preserve"],
+    "Mountain Lion": ["Silver Ridge Peaks"],
+    "Rocky Mountain Bighorn Sheep": ["Silver Ridge Peaks","Askiy Ridge Hunting Preserve"],
+    "Rocky Mountain Elk": ["Silver Ridge Peaks"],
+    "Chamois": ["Te Awaroa National Park"],
+    "Feral Goat": ["Te Awaroa National Park","Emerald Coast","Tòrr nan Sìthean Hunting Reserve"],
+    "Himalayan Tahr": ["Te Awaroa National Park","Sundarpatan Hunting Reserve"],
+    "Sika Deer": ["Te Awaroa National Park","Tòrr nan Sìthean Hunting Reserve"],
+    "Feral Pig": ["Te Awaroa National Park","Emerald Coast"],
+    "Antelope Jackrabbit": ["Rancho del Arroyo"],
+    "Rio Grande Turkey": ["Rancho del Arroyo"],
+    "Mexican Bobcat": ["Rancho del Arroyo"],
+    "Desert Bighorn Sheep": ["Rancho del Arroyo"],
+    "Bobwhite Quail": ["Mississippi Acres Preserve","New England Mountains"],
+    "Eastern Cottontail Rabbit": ["Mississippi Acres Preserve","New England Mountains"],
+    "Eastern Wild Turkey": ["Mississippi Acres Preserve","New England Mountains"],
+    "Green-Winged Teal": ["Mississippi Acres Preserve","New England Mountains"],
+    "Common Raccoon": ["Mississippi Acres Preserve","New England Mountains","Salzwiesen Park"],
+    "Gray Fox": ["Mississippi Acres Preserve","New England Mountains"],
+    "Wild Hog": ["Mississippi Acres Preserve"],
+    "American Alligator": ["Mississippi Acres Preserve"],
+    "Black Grouse": ["Revontuli Coast","Salzwiesen Park","Tòrr nan Sìthean Hunting Reserve"],
+    "Eurasian Teal": ["Revontuli Coast","Salzwiesen Park"],
+    "Goldeneye": ["Revontuli Coast","New England Mountains","Salzwiesen Park"],
+    "Greylag Goose": ["Revontuli Coast","Sundarpatan Hunting Reserve","Salzwiesen Park"],
+    "Hazel Grouse": ["Revontuli Coast"],
+    "Mountain Hare": ["Revontuli Coast","Tòrr nan Sìthean Hunting Reserve"],
+    "Rock Ptarmigan": ["Revontuli Coast"],
+    "Tufted Duck": ["Revontuli Coast","Salzwiesen Park"],
+    "Tundra Bean Goose": ["Revontuli Coast","Salzwiesen Park"],
+    "Raccoon Dog": ["Revontuli Coast","Salzwiesen Park"],
+    "Magpie Goose": ["Emerald Coast"],
+    "Stubble Quail": ["Emerald Coast"],
+    "Hog Deer": ["Emerald Coast"],
+    "Eastern Gray Kangaroo": ["Emerald Coast"],
+    "Javan Rusa": ["Emerald Coast"],
+    "Sambar": ["Emerald Coast"],
+    "Saltwater Crocodile": ["Emerald Coast"],
+    "Banteng": ["Emerald Coast"],
+    "Graylag Goose": ["Sundarpatan Hunting Reserve","Salzwiesen Park"],
+    "Wooly Hare": ["Sundarpatan Hunting Reserve"],
+    "Northern Red Muntjac": ["Sundarpatan Hunting Reserve"],
+    "Tibetan Fox": ["Sundarpatan Hunting Reserve"],
+    "Blue Sheep": ["Sundarpatan Hunting Reserve"],
+    "Snow Leopard": ["Sundarpatan Hunting Reserve"],
+    "Barasingha": ["Sundarpatan Hunting Reserve"],
+    "Nilgai": ["Sundarpatan Hunting Reserve"],
+    "Bengal Tiger": ["Sundarpatan Hunting Reserve"],
+    "Wild Yak": ["Sundarpatan Hunting Reserve"],
+    "Ferruginous Duck": ["Salzwiesen Park"],
+    "Gadwall": ["Salzwiesen Park"],
+    "Dusky Grouse": ["Askiy Ridge Hunting Preserve"],
+    "Northern Pintail": ["Askiy Ridge Hunting Preserve"],
+    "Snow Goose": ["Askiy Ridge Hunting Preserve"],
+    "Wood Duck": ["Askiy Ridge Hunting Preserve"],
+    "North American Beaver": ["Askiy Ridge Hunting Preserve"],
+    "Woodland Caribou": ["Askiy Ridge Hunting Preserve"],
+    "Manitoban Elk": ["Askiy Ridge Hunting Preserve"],
+    "Wood Bison": ["Askiy Ridge Hunting Preserve"],
+    "American Mink": ["Tòrr nan Sìthean Hunting Reserve"],
+    "Eurasian Pine Marten": ["Tòrr nan Sìthean Hunting Reserve"],
+    "Eurasian Woodcock": ["Tòrr nan Sìthean Hunting Reserve"],
+    "Red Grouse": ["Tòrr nan Sìthean Hunting Reserve"],
+    "European Badger": ["Tòrr nan Sìthean Hunting Reserve"],
+    "Greater Grison": ["Intisuyu Hunting Reserve"],
+    "Western Mountain Coati": ["Intisuyu Hunting Reserve"],
+    "Ocelot": ["Intisuyu Hunting Reserve"],
+    "Taruca": ["Intisuyu Hunting Reserve"],
+    "Vicuna": ["Intisuyu Hunting Reserve"],
+    "Capybara": ["Intisuyu Hunting Reserve"],
+    "Jaguar": ["Intisuyu Hunting Reserve"],
+    "South American Tapir": ["Intisuyu Hunting Reserve"],
+    "Spectacled Bear": ["Intisuyu Hunting Reserve"],
+    "Black Caiman": ["Intisuyu Hunting Reserve"]
 
 };
-
 
 /* ========================================================
    RARE DATA
@@ -1005,13 +1031,8 @@ function populateSpeciesSelect() {
     speciesSelect.innerHTML =
         `<option value="">Select Species</option>`;
 
-    Object.keys(greatOneData)
-        .filter(species => {
-            return ![
-                "Pheasant",
-                "Tahr"
-            ].includes(species);
-        })
+    Object.keys(speciesMaps)
+        .sort()
         .forEach(species => {
 
             const option =
