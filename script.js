@@ -736,6 +736,13 @@ const UNIT_STORAGE_KEY =
 
 function saveGrinds() {
 
+    const currentGrind = getCurrentGrind();
+
+    if (currentGrind) {
+        currentGrind.updatedAt =
+            new Date().toISOString();
+    }
+
     localStorage.setItem(
         GRINDS_STORAGE_KEY,
         JSON.stringify(grinds)
@@ -1871,86 +1878,92 @@ function populateGreatOneForm() {
         return;
     }
 
-
     const species =
         grind.species;
 
-    const data =
-        greatOneData[species] || {};
+    const isGreatOneSpecies =
+        hasGreatOne(species);
 
+    const data =
+        isGreatOneSpecies
+            ? (greatOneData[species] || {})
+            : {
+                furs: rareData[species] || [],
+                furLabel: "Rare Fur"
+            };
 
     greatOneSpecies.value =
         species;
 
+    const formSectionTitle =
+        greatOneSection?.querySelector(".section-title h2");
 
-    furLabel.textContent =
-        data.furLabel || "Fur";
+    const formSectionDescription =
+        greatOneSection?.querySelector(".section-title p");
 
+    const historyTitle =
+        greatOneSection?.querySelector(".great-one-records-section h2");
 
-    furSelect.innerHTML =
-        `<option value="">Select ${escapeHtml(
-            data.furLabel || "Fur"
-        )}</option>`;
+    const historyDescription =
+        greatOneSection?.querySelector(".history-description");
 
-
-    (data.furs || []).forEach(fur => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = fur;
-        option.textContent = fur;
-
-        furSelect.appendChild(option);
-
-    });
-
-
-    rackSelect.innerHTML =
-        `<option value="">Select Rack</option>`;
-
-
-    (data.racks || []).forEach(rack => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = rack;
-        option.textContent = rack;
-
-        rackSelect.appendChild(option);
-
-    });
-
-
-    if ((data.racks || []).length) {
-
-        rackField.classList.remove("hidden");
-
+    if (isGreatOneSpecies) {
+        if (formSectionTitle) formSectionTitle.textContent = "Great One Details";
+        if (formSectionDescription) formSectionDescription.textContent =
+            "Record the details of your Great One. Logging it will complete this grind.";
+        if (historyTitle) historyTitle.textContent = "Great One History";
+        if (historyDescription) historyDescription.textContent =
+            "Your logged Great Ones and their custom names are saved here.";
+        greatOneNameInput.closest(".form-field")?.classList.remove("hidden");
     } else {
-
-        rackField.classList.add("hidden");
-
+        if (formSectionTitle) formSectionTitle.textContent = "Super Rare Details";
+        if (formSectionDescription) formSectionDescription.textContent =
+            "Record the rare fur, weight, and score of the Super Rare. Logging it will complete this grind.";
+        if (historyTitle) historyTitle.textContent = "Super Rare History";
+        if (historyDescription) historyDescription.textContent =
+            "Your logged Super Rares and their details are saved here.";
+        greatOneNameInput.closest(".form-field")?.classList.add("hidden");
     }
 
+    furLabel.textContent =
+        data.furLabel || (isGreatOneSpecies ? "Fur" : "Rare Fur");
 
-    whitetail5050Field.classList.add(
-        "hidden"
-    );
+    furSelect.innerHTML =
+        '<option value="">Select ' +
+        escapeHtml(data.furLabel || (isGreatOneSpecies ? "Fur" : "Rare Fur")) +
+        '</option>';
 
+    (data.furs || []).forEach(fur => {
+        const option = document.createElement("option");
+        option.value = fur;
+        option.textContent = fur;
+        furSelect.appendChild(option);
+    });
+
+    rackSelect.innerHTML =
+        '<option value="">Select Rack</option>';
+
+    (data.racks || []).forEach(rack => {
+        const option = document.createElement("option");
+        option.value = rack;
+        option.textContent = rack;
+        rackSelect.appendChild(option);
+    });
+
+    if (isGreatOneSpecies && (data.racks || []).length) {
+        rackField.classList.remove("hidden");
+    } else {
+        rackField.classList.add("hidden");
+    }
+
+    whitetail5050Field.classList.add("hidden");
     whitetail5050Input.value = "";
 
-
     greatOneNameInput.value = "";
-
     furSelect.value = "";
-
     rackSelect.value = "";
-
     weightInput.value = "";
-
     scoreInput.value = "";
-
 
     updateRackRequirements();
 
@@ -2139,7 +2152,9 @@ function validateGreatOneForm() {
     if (!fur) {
 
         alert(
-            "Please select a Great One fur."
+            hasGreatOne(grind.species)
+                ? "Please select a Great One fur."
+                : "Please select a rare fur type."
         );
 
         return null;
@@ -2245,33 +2260,26 @@ function logGreatOne() {
         getCurrentGrind();
 
     if (!grind) {
-
         alert("No grind selected.");
-
         return;
-
     }
-
 
     if (grind.completed) {
-
-        alert(
-            "This grind is already completed."
-        );
-
+        alert("This grind is already completed.");
         return;
-
     }
 
+    if (!hasGreatOne(grind.species)) {
+        logSuperRare();
+        return;
+    }
 
     const details =
         validateGreatOneForm();
 
-
     if (!details) {
         return;
     }
-
 
     const name =
         getGreatOneName(
@@ -2279,76 +2287,93 @@ function logGreatOne() {
             greatOneNameInput.value
         );
 
-
     const record = {
-
         id:
             Date.now().toString() +
-            Math.random()
-                .toString(36)
-                .slice(2),
-
+            Math.random().toString(36).slice(2),
         name,
-
-        species:
-            grind.species,
-
-        fur:
-            details.fur,
-
-        rack:
-            details.rack,
-
-        whitetail5050:
-            details.whitetail5050,
-
-        weightKg:
-            details.weightKg,
-
-        score:
-            details.score,
-
-        createdAt:
-            new Date().toISOString()
-
+        species: grind.species,
+        fur: details.fur,
+        rack: details.rack,
+        whitetail5050: details.whitetail5050,
+        weightKg: details.weightKg,
+        score: details.score,
+        createdAt: new Date().toISOString()
     };
-
 
     if (!Array.isArray(grind.greatOneRecords)) {
         grind.greatOneRecords = [];
     }
 
-
     grind.greatOneRecords.push(record);
-
-
     grind.counters.greatOnes =
         grind.greatOneRecords.length;
+    grind.completed = true;
+
+    saveGrinds();
+    resetGreatOneForm();
+    renderGreatOneRecords();
+    updateCounterDisplays();
+    updateSidebar();
+    updateGreatOneButton();
+
+    alert("Great One logged! The grind has been moved to Grind Logs.");
+
+}
 
 
-    /*
-       The one-click logging action completes
-       the grind immediately.
-    */
+function logSuperRare() {
+
+    const grind =
+        getCurrentGrind();
+
+    if (!grind) {
+        alert("No grind selected.");
+        return;
+    }
+
+    if (grind.completed) {
+        alert("This grind is already completed.");
+        return;
+    }
+
+    const details =
+        validateGreatOneForm();
+
+    if (!details) {
+        return;
+    }
+
+    const record = {
+        id:
+            Date.now().toString() +
+            Math.random().toString(36).slice(2),
+        species: grind.species,
+        fur: details.fur,
+        weightKg: details.weightKg,
+        score: details.score,
+        createdAt: new Date().toISOString()
+    };
+
+    if (!Array.isArray(grind.superRareRecords)) {
+        grind.superRareRecords = [];
+    }
+
+    grind.superRareRecords.push(record);
+
+    grind.counters.superRares =
+        (Number(grind.counters.superRares) || 0) + 1;
 
     grind.completed = true;
 
-
     saveGrinds();
-
     resetGreatOneForm();
-
     renderGreatOneRecords();
-
     updateCounterDisplays();
-
     updateSidebar();
-
     updateGreatOneButton();
 
-    alert(
-        "Great One logged! The grind has been moved to Grind Logs."
-    );
+    alert("Super Rare logged! The grind has been moved to Grind Logs.");
 
 }
 
@@ -2378,7 +2403,7 @@ function updateGreatOneUI() {
         : "Log Super Rare & Complete Grind";
 
     if (typeof greatOneSection !== "undefined" && greatOneSection) {
-        greatOneSection.classList.toggle("hidden", !isGreatOneSpecies);
+        greatOneSection.classList.remove("hidden");
     }
 }
 
@@ -2438,10 +2463,17 @@ function renderGreatOneRecords() {
     }
 
 
+    const isGreatOneSpecies =
+        hasGreatOne(grind.species);
+
     const records =
-        Array.isArray(grind.greatOneRecords)
-            ? grind.greatOneRecords
-            : [];
+        isGreatOneSpecies
+            ? (Array.isArray(grind.greatOneRecords)
+                ? grind.greatOneRecords
+                : [])
+            : (Array.isArray(grind.superRareRecords)
+                ? grind.superRareRecords
+                : []);
 
 
     if (!records.length) {
@@ -2482,8 +2514,9 @@ function renderGreatOneRecords() {
             "great-one-record-name";
 
         name.textContent =
-            record.name ||
-            `${record.species} #1`;
+            isGreatOneSpecies
+                ? (record.name || record.species + " #1")
+                : "Super Rare";
 
 
         const actions =
@@ -2506,6 +2539,10 @@ function renderGreatOneRecords() {
             "click",
             () => renameGreatOne(record.id)
         );
+
+        if (!isGreatOneSpecies) {
+            renameButton.classList.add("hidden");
+        }
 
 
         const deleteButton =
@@ -2548,9 +2585,32 @@ function renderGreatOneRecords() {
 
         addGreatOneDetail(
             details,
-            "Fur",
+            isGreatOneSpecies ? "Fur" : "Rare Fur",
             record.fur
         );
+
+        if (!isGreatOneSpecies) {
+            if (Number.isFinite(Number(record.weightKg))) {
+                const displayedWeight =
+                    currentUnit === "metric"
+                        ? Number(record.weightKg).toFixed(2) + " kg"
+                        : (Number(record.weightKg) * 2.2046226218).toFixed(2) + " lb";
+
+                addGreatOneDetail(
+                    details,
+                    "Weight",
+                    displayedWeight
+                );
+            }
+
+            if (record.score != null && String(record.score).trim()) {
+                addGreatOneDetail(
+                    details,
+                    "Score",
+                    record.score
+                );
+            }
+        }
 
 
         if (record.rack) {
