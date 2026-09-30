@@ -3746,13 +3746,18 @@ async function signInWithProvider(provider) {
 
     if (error) {
         console.error("OAuth sign-in failed:", error);
-        alert("Could not start " + (provider === "google" ? "Google" : "Apple") + " sign-in: " + error.message);
+        alert(
+            "Could not start " +
+            (provider === "google" ? "Google" : "Apple") +
+            " sign-in: " +
+            error.message
+        );
     }
 
 }
 
 
-async function scheduleCloudSync() {
+function scheduleCloudSync() {
 
     if (
         !currentUser ||
@@ -3769,6 +3774,62 @@ async function scheduleCloudSync() {
         500
     );
 
+}
+
+
+/*
+   Merge grinds from both the device and cloud.
+
+   This is intentionally additive: a grind that exists on
+   either side is kept. For the same grind ID, prefer the
+   version that has a later updatedAt timestamp when one is
+   available. Legacy grinds without updatedAt keep the
+   local version when it contains data, which prevents an
+   empty/new device from replacing an existing grind.
+*/
+function mergeGrinds(localGrinds, cloudGrinds) {
+
+    const local = Array.isArray(localGrinds)
+        ? localGrinds
+        : [];
+
+    const cloud = Array.isArray(cloudGrinds)
+        ? cloudGrinds
+        : [];
+
+    const byId = new Map();
+
+    cloud.forEach(grind => {
+        if (grind?.id != null) {
+            byId.set(String(grind.id), grind);
+        }
+    });
+
+    local.forEach(grind => {
+        if (grind?.id == null) {
+            return;
+        }
+
+        const key = String(grind.id);
+        const existing = byId.get(key);
+
+        if (!existing) {
+            byId.set(key, grind);
+            return;
+        }
+
+        const localTime =
+            Date.parse(grind.updatedAt || grind.createdAt || "") || 0;
+
+        const cloudTime =
+            Date.parse(existing.updatedAt || existing.createdAt || "") || 0;
+
+        if (localTime >= cloudTime) {
+            byId.set(key, grind);
+        }
+    });
+
+    return Array.from(byId.values());
 }
 
 
@@ -3852,15 +3913,35 @@ async function loadCloudData(user) {
         return;
     }
 
+    /*
+       IMPORTANT:
+       Do not call Supabase from inside the auth-state
+       callback while it is still running. Supabase currently
+       documents a deadlock risk for async API calls there.
+    */
     suppressCloudSync = true;
 
     try {
 
         if (data) {
 
-            if (Array.isArray(data.grinds)) {
-                grinds = data.grinds;
-            }
+            const localGrinds = Array.isArray(grinds)
+                ? grinds
+                : [];
+
+            const cloudGrinds = Array.isArray(data.grinds)
+                ? data.grinds
+                : [];
+
+            const mergedGrinds =
+                mergeGrinds(localGrinds, cloudGrinds);
+
+            /*
+               If this device has the user's existing local
+               grinds and the cloud row is empty/new, keep the
+               local grinds and upload the merged result.
+            */
+            grinds = mergedGrinds;
 
             if (
                 data.current_grind_id &&
@@ -3871,6 +3952,19 @@ async function loadCloudData(user) {
             ) {
                 currentGrindId =
                     data.current_grind_id;
+            }
+
+            if (!currentGrindId && grinds.length) {
+
+                const firstActive =
+                    grinds.find(
+                        grind => !grind.completed
+                    );
+
+                currentGrindId =
+                    firstActive?.id ||
+                    grinds[grinds.length - 1].id;
+
             }
 
             if (
@@ -3912,17 +4006,24 @@ async function loadCloudData(user) {
                 JSON.stringify(grinds)
             );
 
-            normalizeGreatOneNames();
+            if (normalizeGreatOneNames()) {
+                localStorage.setItem(
+                    GRINDS_STORAGE_KEY,
+                    JSON.stringify(grinds)
+                );
+            }
 
         } else {
 
             /*
-               First sign-in on this device:
-               upload the existing local tracker
-               instead of replacing it with an empty
-               cloud account.
+               First sign-in on any device:
+               the local tracker becomes the initial
+               cloud copy instead of being discarded.
             */
-            await syncToCloud();
+            localStorage.setItem(
+                GRINDS_STORAGE_KEY,
+                JSON.stringify(grinds)
+            );
 
         }
 
@@ -3932,22 +4033,22 @@ async function loadCloudData(user) {
 
     }
 
-    if (!currentGrindId && grinds.length) {
-
-        const firstActive =
-            grinds.find(grind => !grind.completed);
-
-        currentGrindId =
-            firstActive?.id ||
-            grinds[grinds.length - 1].id;
-
+    /*
+       Upload after merging. This is the part the old code
+       was missing: syncToCloud() was called while
+       suppressCloudSync was still true, so it immediately
+       returned and never created the user's cloud row.
+    */
+    if (data) {
+        await syncToCloud();
+    } else {
+        await syncToCloud();
     }
 
     applySettings();
     updateUnitButtons();
     updateWeightUnit();
     updateAll();
-
 }
 
 
@@ -4041,7 +4142,7 @@ async function initializeCloudSync() {
     updateAuthUI();
 
     supabaseClient.auth.onAuthStateChange(
-        async (_event, session) => {
+        (_event, session) => {
 
             const user =
                 session?.user || null;
@@ -4050,7 +4151,14 @@ async function initializeCloudSync() {
                 user;
 
             if (user) {
-                await loadCloudData(user);
+                /*
+                   Defer the cloud request until after the
+                   auth callback returns to avoid Supabase's
+                   documented auth-state deadlock.
+                */
+                setTimeout(() => {
+                    loadCloudData(user);
+                }, 0);
             } else {
                 updateAuthUI();
             }
