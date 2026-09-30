@@ -343,116 +343,135 @@ const speciesMaps = {
 
 const rareData = {
 
-    "Whitetail Deer": [
-        "Albino",
-        "Piebald",
-        "Melanistic"
-    ],
-
-    "Red Deer": [
-        "Albino",
-        "Erythristic",
-        "Leucistic",
-        "Melanistic",
-        "Piebald"
-    ],
-
-    "Black Bear": [
-        "Blonde",
-        "Brown",
-        "Cinnamon"
-    ],
-
-    "Moose": [
-        "Acromelanistic",
-        "Albino",
-        "Melanistic",
-        "Piebald",
-        "Mosaic"
-    ],
-
-    "Fallow Deer": [
-        "Albino",
-        "Melanistic",
-        "Acromelanistic",
-        "Erythristic",
-        "Leucistic",
-        "Piebald"
-    ],
-
-    "Himalayan Tahr": [
-        "Albino",
-        "Red",
-        "White",
-        "Black",
-        "Dark Brown",
-        "Dark Red"
-    ],
-
-    "Red Fox": [
-        "Albino",
-        "Melanistic",
-        "Piebald"
-    ],
-
-    "Ring-Necked Pheasant": [
-        "Albino",
-        "Leucistic",
-        "Melanistic"
-    ],
-
-    "Gray Wolf": [
-        "Acromelanistic",
-        "Albino",
-        "Melanistic",
-        "Melanistic Charcoal",
-        "Dark Grey",
-        "Egg White",
-        "Red Brown"
-    ],
-
-    "Wild Boar": [
-        "Albino",
-        "Melanistic",
-        "Black Gold",
-        "Purple Grey"
-    ],
-
-    "Roe Deer": [
-        "Albino",
-        "Leucistic",
-        "Melanistic",
-        "Piebald"
-    ],
-
-    "Jaguar": [
-        "Albino",
-        "Leucistic",
-        "Piebald",
-        "Pseudo Melanistic"
-    ],
-
-    "Taruca": [
-        "Albino",
-        "Erythristic",
-        "Leucistic",
-        "Piebald",
-        "Melanistic"
-    ],
-
-    "Mule Deer": [
-        "Albino",
-        "Erythristic Isabelline",
-        "Erythristic Red",
-        "Leucistic",
-        "Melanistic",
-        "Mosaic",
-        "Piebald",
-        "Dilute"
-    ]
+    "Canada Goose": ["Albino","Brown Hybrid","Light Grey Leucistic","Melanistic","White Hybrid"],
+    "European Rabbit": ["Albino","Leucistic","Light Grey","Melanistic"],
+    "Ring-Necked Pheasant": ["Albino","Leucistic","Melanistic"],
+    "Red Fox": ["Albino","Melanistic","Piebald"],
+    "Roe Deer": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Fallow Deer": ["Albino","Melanistic","Acromelanistic","Erythristic","Leucistic","Piebald"],
+    "Wild Boar": ["Albino","Melanistic","Black Gold","Purple Grey"],
+    "Red Deer": ["Albino","Erythristic","Leucistic","Melanistic","Piebald"],
+    "European Bison": ["Albino","Melanistic","Piebald"],
+    "Mallard": ["Melanistic","Leucistic","Blonde"],
+    "Merriam Turkey": ["Albino","Melanistic","Leucistic"],
+    "White Tailed Jackrabbit": ["Albino"],
+    "Coyote": ["Albino","Melanistic","Piebald"],
+    "Blacktail Deer": ["Albino","Melanistic","Piebald"],
+    "Whitetail Deer": ["Albino","Melanistic","Piebald"],
+    "Black Bear": ["Blonde","Brown","Cinnamon"],
+    "Roosevelt Elk": ["Albino","Melanistic","Piebald"],
+    "Moose": ["Acromelanistic","Albino","Melanistic","Piebald","Mosaic"],
+    "Western Capercallie": ["Leucistic","Pale"],
+    "Siberian Musk Deer": ["Albino","Melanistic","Piebald"],
+    "Eurasian Lynx": ["Albino","Melanistic","Piebald"],
+    "Gray Wolf": ["Acromelanistic","Albino","Melanistic","Melanistic Charcoal","Dark Grey","Egg White","Red Brown"],
+    "Mountain Reindeer": ["Albino","Melanistic","Leucistic","Piebald"],
+    "Brown Bear": ["Albino","Melanistic"],
+    "Eurasian Wigeon": ["Leucistic","Hybrid","Eclipse","Dark"],
+    "Scrub Hare": ["Light Gray"],
+    "Side Striped Jackal": ["Albino","Melanistic"],
+    "Springbok": ["Albino"],
+    "Lesser Kudu": ["Albino","Melanistic","Red Brown","Dark Brown"],
+    "Warthog": ["Albino","Red"],
+    "Blue Wildbeest": ["Albino","Crowned"],
+    "Gemsbok": ["Beige","Dark","Gold"],
+    "Cape Buffalo": ["Albino","Leucistic"],
+    "Lion": ["Albino","Blonde","Dark Brown"],
+    "Cinnamon Teal": ["Melanistic","Beige"],
+    "Axis Deer": ["Albino","Melanistic","Piebald"],
+    "Blackbuck": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Collared Peccary": ["Albino","Melanistic","Leucistic"],
+    "Mule Deer": ["Albino","Erythristic Isabelline","Erythristic Red","Leucistic","Melanistic","Mosaic","Piebald","Dilute"],
+    "Puma": ["Albino","Melanistic"],
+    "Water Buffalo": ["Albino","Orange"],
+    "Harlequin Duck": ["Albino","Melanistic","Grey","Dark"],
+    "Grant Caribou": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Grizzly Bear": ["Albino","Melanistic","Brown"],
+    "Plains Bison": ["Albino","Leucistic","Melanistic"],
+    "European Hare": ["Albino","Melanistic"],
+    "Beceite Ibex": ["Albino","Melanistic"],
+    "Gredos Ibex": ["Albino","Melanistic"],
+    "Iberian Mouflon": ["Albino","Melanistic","Grey"],
+    "Ronda Ibex": ["Albino","Melanistic"],
+    "Southeastern Spanish Ibex": ["Albino","Melanistic"],
+    "Iberian Wolf": ["Albino","Melanistic","Olive","Pristine","Winter"],
+    "Pronghorn": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Mountain Goat": ["Albino","Melanistic"],
+    "Mountain Lion": ["Albino","Melanistic"],
+    "Rocky Mountain Bighorn Sheep": ["Albino","Melanistic","Leucistic","Piebald"],
+    "Rocky Mountain Elk": ["Albino","Piebald"],
+    "Chamois": ["Albino","Melanistic","Leucistic"],
+    "Feral Goat": ["Albino","Black","Mixed"],
+    "Himalayan Tahr": ["Albino","Red","White","Black","Dark Brown","Dark Red"],
+    "Sika Deer": ["Albino","Red Spotted"],
+    "Feral Pig": ["Pink","Albino"],
+    "Antelope Jackrabbit": ["Albino","Melanistic"],
+    "Rio Grande Turkey": ["Albino","Melanistic","Leucistic"],
+    "Mexican Bobcat": ["Albino","Melanistic","Blue"],
+    "Desert Bighorn Sheep": ["Albino","Melanistic","Leucistic","Piebald","Erythristic","Mosaic"],
+    "Bobwhite Quail": ["Albino"],
+    "Eastern Cottontail Rabbit": ["Albino","Melanistic","Leucistic"],
+    "Eastern Wild Turkey": ["Albino","Melanistic","Leucistic"],
+    "Green-Winged Teal": ["Piebald","Albino"],
+    "Common Raccoon": ["Albino","Melanistic","Piebald Blonde","Piebald Grey"],
+    "Gray Fox": ["Albino","Melanistic","Leucistic","Piebald"],
+    "Wild Hog": ["Pink","Albino"],
+    "American Alligator": ["Albino","Melanistic","Piebald"],
+    "Black Grouse": ["Melanistic","Leucistic","Gold","Orange"],
+    "Eurasian Teal": ["Leucistic","Blue Hybrid","Green Hybrid"],
+    "Goldeneye": ["Leucistic","Hybrid","Eclipse","Dark"],
+    "Greylag Goose": ["Hybrid","Leucistic"],
+    "Hazel Grouse": ["Pale","Hybrid","Dark"],
+    "Mountain Hare": ["White","Albino","Molting"],
+    "Rock Ptarmigan": ["White"],
+    "Tufted Duck": ["Leucistic","Albino","Eclipse","Cream"],
+    "Tundra Bean Goose": ["Leucistic"],
+    "Raccoon Dog": ["Albino","Piebald","Dark Brown","Orange"],
+    "Magpie Goose": ["Melanistic","Leucistic","Piebald"],
+    "Stubble Quail": ["Albino","Dark Brown"],
+    "Hog Deer": ["Leucistic","Piebald"],
+    "Eastern Gray Kangaroo": ["Albino","Melanistic","Leucistic"],
+    "Javan Rusa": ["Leucistic","Piebald","Albino"],
+    "Sambar": ["Albino","Leucistic","Piebald"],
+    "Saltwater Crocodile": ["Albino","Leucistic","Light Brown","Melanistic","Piebald"],
+    "Banteng": ["Albino","Melanistic"],
+    "Graylag Goose": ["Hybrid","Leucistic"],
+    "Wooly Hare": ["Albino","White"],
+    "Northern Red Muntjac": ["Albino","Melanistic","Leucistic"],
+    "Tibetan Fox": ["Albino","Leucistic","Melanistic","Sand","Smoke"],
+    "Blue Sheep": ["Albino","Leucistic","Melanistic"],
+    "Snow Leopard": ["Albino","Leucistic","Melanistic"],
+    "Barasingha": ["Albino","Melanistic","Leucistic","Piebald"],
+    "Nilgai": ["Piebald"],
+    "Bengal Tiger": ["Albino","Melanistic","Gold","White","White Stripeless","Pseudo Melanistic","Pseudo Melanistic White"],
+    "Wild Yak": ["Albino","Gold","Leucistic"],
+    "Ferruginous Duck": ["Albino","Leucistic","Melanistic"],
+    "Gadwall": ["Albino","Leucistic"],
+    "Dusky Grouse": ["Albino","Leucistic","Melanistic"],
+    "Northern Pintail": ["Albino","Erythristic","Leucistic","Melanistic","Piebald"],
+    "Snow Goose": ["Albino","Melanistic","Blue Morph","Hybrid","Intermediate Morph"],
+    "Wood Duck": ["Albino","Dilute Silver","Erythristic Golden","Leucistic","Melanistic","Piebald"],
+    "North American Beaver": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Woodland Caribou": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Manitoban Elk": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Wood Bison": ["Albino","Leucistic","Melanistic","Dark Brown","Piebald"],
+    "American Mink": ["Albino","Leucistic","Melanistic","Silver","Piebald","Black"],
+    "Eurasian Pine Marten": ["Albino","Leucistic","Piebald","Melanistic","Tawny"],
+    "Eurasian Woodcock": ["Albino","Melanistic","Leucistic","Dark Brown"],
+    "Red Grouse": ["Albino","Melanistic","Leucistic","Piebald"],
+    "European Badger": ["Albino","Leucistic","Melanistic","Piebald","Dilute","Erythristic Red"],
+    "Greater Grison": ["Albino","Erythristic Chocolate","Leucistic","Melanistic","Piebald"],
+    "Western Mountain Coati": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Ocelot": ["Albino","Leucistic","Melanistic","Melanistic Charcoal","Piebald","Pseudo Melanistic","Erythristic Red","Erythristic Isabelline"],
+    "Taruca": ["Albino","Erythristic","Leucistic","Piebald","Melanistic"],
+    "Vicuna": ["Albino","Dilute Silver","Erythristic Isabelline","Leucistic","Melanistic","Piebald"],
+    "Capybara": ["Albino","Leucistic","Melanistic","Piebald"],
+    "Jaguar": ["Albino","Leucistic","Piebald","Pseudo Melanistic"],
+    "South American Tapir": ["Albino","Erythristic","Melanistic","Leucistic","Piebald"],
+    "Spectacled Bear": ["Albino","Erythristic Isabelline","Erythristic Red","Leucistic","Melanistic","Piebald","Blond Faced","No Markings"],
+    "Black Caiman": ["Albino","Melanistic","Leucistic","Piebald"]
 
 };
-
 
 /* ========================================================
    SPECIES NAME COMPATIBILITY
