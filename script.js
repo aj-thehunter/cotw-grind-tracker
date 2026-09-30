@@ -1174,6 +1174,68 @@ function createGrind() {
 
 
 /* ========================================================
+   DIRECT COUNTER EDITING
+======================================================== */
+
+function makeCounterEditable(element, counter) {
+    element.classList.add("editable-counter");
+    element.title = "Click to edit";
+
+    element.addEventListener("click", event => {
+        event.stopPropagation();
+
+        const grind = getCurrentGrind();
+        if (!grind || grind.completed) return;
+        if (!Object.prototype.hasOwnProperty.call(grind.counters, counter)) return;
+        if (element.querySelector("input")) return;
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "0";
+        input.step = "1";
+        input.inputMode = "numeric";
+        input.className = "counter-edit-input";
+        input.value = String(Math.max(0, Number(grind.counters[counter]) || 0));
+        input.setAttribute("aria-label", "Edit " + counter);
+
+        element.textContent = "";
+        element.appendChild(input);
+        input.focus();
+        input.select();
+
+        let finished = false;
+
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+
+            let value = Number(input.value);
+            if (!Number.isFinite(value)) value = 0;
+            value = Math.max(0, Math.floor(value));
+
+            grind.counters[counter] = value;
+            saveGrinds();
+            updateCounterDisplays();
+            updateSidebar();
+        };
+
+        input.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                finish();
+            } else if (e.key === "Escape") {
+                e.preventDefault();
+                finished = true;
+                updateCounterDisplays();
+            }
+        });
+
+        input.addEventListener("blur", finish);
+    });
+}
+
+
+/* ========================================================
    COUNTERS
 ======================================================== */
 
@@ -3447,6 +3509,16 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 
 }
+
+
+/* ========================================================
+   ENABLE DIRECT COUNTER EDITING
+======================================================== */
+
+makeCounterEditable(killsCounter, "kills");
+makeCounterEditable(diamondsCounter, "diamonds");
+makeCounterEditable(trollsCounter, "trolls");
+makeCounterEditable(superRaresCounter, "superRares");
 
 
 /* ========================================================
