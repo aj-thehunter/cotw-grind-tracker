@@ -1,0 +1,20 @@
+{
+  "name": "cotw-grind-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "COTW Grind Tracker mobile and web app",
+  "scripts": {
+    "build": "echo \"COTW Grind Tracker is a static web app\"",
+    "sync": "npx cap sync",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/ios": "^8.0.0"
+  }
+}
