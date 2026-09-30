@@ -864,3 +864,101 @@ body.text-large {
 .editable-counter { cursor: text; user-select: none; }
 .editable-counter:hover { text-decoration: underline; text-decoration-color: var(--accent-color); text-underline-offset: 4px; }
 .counter-edit-input { width: 100%; max-width: 180px; box-sizing: border-box; font: inherit; font-weight: inherit; text-align: center; color: inherit; background: transparent; border: 1px solid var(--accent-color); border-radius: 6px; outline: none; padding: 2px 6px; }
+
+
+/* ========================================================
+   CLOUD ACCOUNT BAR
+======================================================== */
+
+.cloud-auth-bar {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cloud-auth-status {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+}
+
+.cloud-auth-label {
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+#authStatus {
+    color: var(--muted-text);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cloud-auth-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#authEmailInput {
+    width: 190px;
+    padding: 8px 10px;
+    background: #080808;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    outline: none;
+}
+
+#authEmailInput:focus {
+    border-color: var(--accent-color);
+}
+
+.auth-button {
+    padding: 8px 11px;
+    border: 0;
+    border-radius: 7px;
+    background: var(--accent-color);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.auth-button:disabled {
+    opacity: 0.75;
+    cursor: default;
+}
+
+.auth-button.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+}
+
+@media (max-width: 760px) {
+    .cloud-auth-bar {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cloud-auth-controls {
+        width: 100%;
+    }
+
+    #authEmailInput {
+        flex: 1;
+        width: auto;
+    }
+}
