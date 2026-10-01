@@ -677,8 +677,6 @@ const importBackupButton =
 const importBackupInput =
     document.getElementById("importBackupInput");
 
-const appSplash =
-    document.getElementById("appSplash");
 
 const offlineStatus =
     document.getElementById("offlineStatus");
@@ -799,13 +797,6 @@ function registerOfflineSupport() {
     }
 }
 
-function hideAppSplash() {
-    if (!appSplash) return;
-    window.setTimeout(() => {
-        appSplash.classList.add("hidden");
-        appSplash.setAttribute("aria-hidden", "true");
-    }, 350);
-}
 
 /* ========================================================
    LOCAL STORAGE
