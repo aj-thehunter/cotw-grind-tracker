@@ -4,11 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COTW Grind Tracker</title>
-    <link rel="stylesheet" href="style.css?v=7">\n    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css?v=8">\n    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
+
+<div id="appSplash" class="app-splash" aria-hidden="true">
+    <img src="favicon.svg" alt="" class="app-splash-logo">
+    <div class="app-splash-title">COTW Grind Tracker</div>
+</div>
+
+<div id="offlineStatus" class="offline-status hidden" role="status" aria-live="polite">
+    Offline — your local tracker data is still available.
+</div>
+
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
 <div class="cloud-auth-bar">
     <div class="cloud-auth-brand">
@@ -888,6 +899,33 @@
         </section>
 
 
+        <section class="settings-section">
+
+            <h3>Data &amp; Backup</h3>
+
+            <p class="settings-description">
+                Export your tracker data for safekeeping, or restore a previous backup on this device.
+            </p>
+
+            <div class="settings-buttons backup-buttons">
+                <button id="exportBackupButton" class="save-button">
+                    Export Backup
+                </button>
+
+                <button id="importBackupButton" class="save-button secondary-save-button">
+                    Import Backup
+                </button>
+            </div>
+
+            <input
+                id="importBackupInput"
+                type="file"
+                accept="application/json,.json"
+                class="hidden"
+            >
+
+        </section>
+
         <div class="settings-buttons">
 
             <button
@@ -904,7 +942,7 @@
 </div>
 
 
-<script src="script.js?v=7"></script>
+<script src="script.js?v=8"></script>
 
 </body>
 </html>

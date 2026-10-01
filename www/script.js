@@ -668,6 +668,24 @@ const textSizeSelect =
 const resetSettingsButton =
     document.getElementById("resetSettingsButton");
 
+const exportBackupButton =
+    document.getElementById("exportBackupButton");
+
+const importBackupButton =
+    document.getElementById("importBackupButton");
+
+const importBackupInput =
+    document.getElementById("importBackupInput");
+
+const appSplash =
+    document.getElementById("appSplash");
+
+const offlineStatus =
+    document.getElementById("offlineStatus");
+
+const toastContainer =
+    document.getElementById("toastContainer");
+
 
 /* ========================================================
    STATE
@@ -733,6 +751,61 @@ let settings = {
 
 };
 
+
+/* ========================================================
+   USER FEEDBACK / OFFLINE UI
+======================================================== */
+
+function showToast(message, type = "success") {
+    if (!toastContainer) return;
+
+    const toast = document.createElement("div");
+    toast.className = `app-toast ${type}`;
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add("visible"));
+
+    window.setTimeout(() => {
+        toast.classList.remove("visible");
+        window.setTimeout(() => toast.remove(), 220);
+    }, 2800);
+}
+
+function updateOfflineStatus() {
+    if (!offlineStatus) return;
+    offlineStatus.classList.toggle("hidden", navigator.onLine);
+}
+
+function registerOfflineSupport() {
+    updateOfflineStatus();
+
+    window.addEventListener("online", () => {
+        updateOfflineStatus();
+        showToast("Back online. Cloud sync will resume.", "success");
+        if (currentUser) {
+            scheduleCloudSync();
+        }
+    });
+
+    window.addEventListener("offline", () => {
+        updateOfflineStatus();
+        showToast("You're offline. Your local grind data will keep saving.", "info");
+    });
+
+    if ("serviceWorker" in navigator && window.location.protocol !== "capacitor:") {
+        navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+            .catch(error => console.warn("Offline service worker registration failed:", error));
+    }
+}
+
+function hideAppSplash() {
+    if (!appSplash) return;
+    window.setTimeout(() => {
+        appSplash.classList.add("hidden");
+        appSplash.setAttribute("aria-hidden", "true");
+    }, 350);
+}
 
 /* ========================================================
    LOCAL STORAGE
@@ -1373,6 +1446,8 @@ function createGrind() {
     closeNewGrindModal();
 
     updateAll();
+
+    showToast(`Grind started: ${species} on ${map}`);
 
 initializeCloudSync();
 
@@ -2435,7 +2510,7 @@ function logGreatOne() {
     updateSidebar();
     updateGreatOneButton();
 
-    alert("Great One logged! The grind has been moved to Grind Logs.");
+    showToast("Great One logged! The grind was moved to Grind Logs.");
 
 }
 
@@ -2491,7 +2566,7 @@ function logSuperRare() {
     updateSidebar();
     updateGreatOneButton();
 
-    alert("Super Rare logged! The grind has been moved to Grind Logs.");
+    showToast("Super Rare logged! The grind was moved to Grind Logs.");
 
 }
 
@@ -2876,9 +2951,7 @@ function renameGreatOne(recordId) {
 
     if (!trimmed) {
 
-        alert(
-            "The name cannot be blank."
-        );
+        showToast("The name cannot be blank.", "error");
 
         return;
 
@@ -3782,10 +3855,138 @@ closeSettingsButton.addEventListener(
 );
 
 
+/* ========================================================
+   BACKUP / RESTORE
+======================================================== */
+
+function createBackupPayload() {
+    return {
+        format: "cotw-grind-tracker-backup",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        grinds: grinds,
+        settings: settings,
+        currentGrindId: currentGrindId,
+        currentUnit: currentUnit
+    };
+}
+
+function exportBackup() {
+    try {
+        const payload = createBackupPayload();
+        const json = JSON.stringify(payload, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+
+        link.href = url;
+        link.download = `COTW-Grind-Tracker-Backup-${date}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+
+        showToast("Backup exported successfully.");
+    } catch (error) {
+        console.error("Backup export failed:", error);
+        showToast("Could not export your backup.", "error");
+    }
+}
+
+function isValidBackup(payload) {
+    return Boolean(
+        payload &&
+        payload.format === "cotw-grind-tracker-backup" &&
+        payload.version === 1 &&
+        Array.isArray(payload.grinds) &&
+        payload.settings &&
+        typeof payload.settings === "object" &&
+        (payload.currentUnit === "metric" || payload.currentUnit === "imperial")
+    );
+}
+
+async function importBackupFile(file) {
+    if (!file) return;
+
+    try {
+        const text = await file.text();
+        const payload = JSON.parse(text);
+
+        if (!isValidBackup(payload)) {
+            throw new Error("Invalid backup format.");
+        }
+
+        const confirmed = confirm(
+            "Restore this backup? Your current local tracker data will be replaced by the backup data. This cannot be undone unless you export your current data first."
+        );
+
+        if (!confirmed) return;
+
+        grinds = payload.grinds;
+        currentGrindId = payload.currentGrindId || null;
+        currentUnit = payload.currentUnit;
+
+        settings = {
+            ...settings,
+            ...payload.settings,
+            deletedGrindIds: Array.isArray(payload.settings.deletedGrindIds)
+                ? payload.settings.deletedGrindIds
+                : [],
+            keybinds: {
+                ...settings.keybinds,
+                ...(payload.settings.keybinds || {})
+            }
+        };
+
+        localStorage.setItem(GRINDS_STORAGE_KEY, JSON.stringify(grinds));
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+        localStorage.setItem(UNIT_STORAGE_KEY, currentUnit);
+        localStorage.setItem(DELETED_GRINDS_STORAGE_KEY, JSON.stringify(settings.deletedGrindIds));
+
+        loadGrinds();
+        applySettings();
+        updateUnitButtons();
+        updateWeightUnit();
+
+        if (!getCurrentGrind()) {
+            const replacement =
+                grinds.find(grind => !grind.completed) ||
+                grinds[grinds.length - 1] ||
+                null;
+            currentGrindId = replacement ? replacement.id : null;
+        }
+
+        updateAll();
+        showToast("Backup restored successfully.");
+
+        if (currentUser && navigator.onLine) {
+            void syncToCloud();
+        }
+    } catch (error) {
+        console.error("Backup import failed:", error);
+        showToast("That file is not a valid COTW Grind Tracker backup.", "error");
+    } finally {
+        if (importBackupInput) importBackupInput.value = "";
+    }
+}
+
 resetSettingsButton.addEventListener(
     "click",
     resetSettings
 );
+
+if (exportBackupButton) {
+    exportBackupButton.addEventListener("click", exportBackup);
+}
+
+if (importBackupButton && importBackupInput) {
+    importBackupButton.addEventListener("click", () => importBackupInput.click());
+    importBackupInput.addEventListener("change", event => {
+        const file = event.target.files?.[0];
+        void importBackupFile(file);
+    });
+}
 
 if (authOpenButton) {
     authOpenButton.addEventListener("click", openAuthModal);
@@ -4003,7 +4204,8 @@ function scheduleCloudSync() {
     if (
         !currentUser ||
         suppressCloudSync ||
-        !supabaseClient
+        !supabaseClient ||
+        !navigator.onLine
     ) {
         return;
     }
@@ -4455,6 +4657,8 @@ async function initializeCloudSync() {
    INITIALIZE
 ======================================================== */
 
+registerOfflineSupport();
+
 loadSettings();
 
 loadGrinds();
@@ -4472,6 +4676,15 @@ updateWeightUnit();
 updateAll();
 
 initializeCloudSync();
+
+if (!localStorage.getItem("cotwHasLaunched")) {
+    localStorage.setItem("cotwHasLaunched", "true");
+    if (!grinds.length) {
+        showToast("Welcome! Create your first grind to get started.", "info");
+    }
+}
+
+hideAppSplash();
 
 /* ========================================================
    FINAL NAVIGATION CONTROLLER
