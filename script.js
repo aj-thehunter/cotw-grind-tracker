@@ -1358,6 +1358,14 @@ function openNewGrindModal() {
 
     newGrindModal.classList.remove("hidden");
 
+    /*
+       On mobile, opening New Grind from the drawer should
+       close the drawer so the modal is the only active panel.
+    */
+    if (window.innerWidth <= 760) {
+        setMobileNavigation(false);
+    }
+
 }
 
 
@@ -3388,6 +3396,14 @@ function openSettings() {
     settingsModal.classList.remove(
         "hidden"
     );
+
+    /*
+       On mobile, opening Settings from the drawer should
+       close the drawer so the modal is the only active panel.
+    */
+    if (window.innerWidth <= 760) {
+        setMobileNavigation(false);
+    }
 
 }
 
