@@ -3645,6 +3645,15 @@ textSizeSelect.addEventListener(
    EVENT LISTENERS
 ======================================================== */
 
+if (menuButton && sidebar) {
+    menuButton.addEventListener(
+        "click",
+        () => {
+            sidebar.classList.toggle("collapsed");
+        }
+    );
+}
+
 newGrindButton.addEventListener(
     "click",
     openNewGrindModal
@@ -4124,18 +4133,20 @@ async function loadCloudData(user) {
                 ? data.settings.deletedGrindIds
                 : [];
 
-            settings.deletedGrindIds = Array.from(
+            const mergedDeletedGrindIds = Array.from(
                 new Set([
                     ...localDeleted,
                     ...cloudDeleted
                 ])
             );
 
+            settings.deletedGrindIds = mergedDeletedGrindIds;
+
             const mergedGrinds =
                 mergeGrinds(
                     localGrinds,
                     cloudGrinds,
-                    settings.deletedGrindIds
+                    mergedDeletedGrindIds
                 );
 
             /*
@@ -4193,7 +4204,8 @@ async function loadCloudData(user) {
                     keybinds: {
                         ...settings.keybinds,
                         ...(data.settings.keybinds || {})
-                    }
+                    },
+                    deletedGrindIds: mergedDeletedGrindIds
                 };
 
                 localStorage.setItem(
