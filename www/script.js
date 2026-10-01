@@ -542,6 +542,9 @@ const diamondsCounter =
 const diamondRateCounter =
     document.getElementById("diamondRateCounter");
 
+const rareRateCounter =
+    document.getElementById("rareRateCounter");
+
 const trollsCounter =
     document.getElementById("trollsCounter");
 
@@ -1136,6 +1139,14 @@ function selectGrind(id) {
 
     updateSidebar();
 
+    /*
+       On mobile, selecting a grind should immediately close
+       the drawer after the selected grind has been rendered.
+    */
+    if (window.innerWidth <= 760) {
+        setMobileNavigation(false);
+    }
+
 }
 
 
@@ -1562,6 +1573,23 @@ function updateCounterDisplays() {
     } else {
 
         diamondRateCounter.textContent =
+            "—";
+
+    }
+
+
+    if (counters.rares > 0) {
+
+        const rate =
+            counters.kills /
+            counters.rares;
+
+        rareRateCounter.textContent =
+            `1 : ${rate.toFixed(2)}`;
+
+    } else {
+
+        rareRateCounter.textContent =
             "—";
 
     }
@@ -4422,23 +4450,6 @@ async function initializeCloudSync() {
    close the drawer. This prevents the drawer from swallowing
    the grind selection.
 ======================================================== */
-
-document.addEventListener("click", event => {
-    if (window.innerWidth > 760 || !sidebar) {
-        return;
-    }
-
-    const grindItem = event.target.closest(".grind-list-item");
-
-    if (!grindItem || !sidebar.contains(grindItem)) {
-        return;
-    }
-
-    setTimeout(() => {
-        setMobileNavigation(false);
-    }, 0);
-});
-
 
 /* ========================================================
    INITIALIZE
