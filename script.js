@@ -4462,3 +4462,44 @@ updateWeightUnit();
 updateAll();
 
 initializeCloudSync();
+
+/* ========================================================
+   FINAL NAVIGATION CONTROLLER
+   Uses event delegation so desktop and mobile menu buttons
+   cannot lose their click handlers because of other scripts.
+======================================================== */
+document.addEventListener("click", event => {
+    const target = event.target.closest(
+        "#menuButton, #desktopMenuButton, #mobileNavBackdrop"
+    );
+
+    if (!target) return;
+
+    if (target.id === "mobileNavBackdrop") {
+        if (window.innerWidth <= 760) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            sidebar?.classList.remove("mobile-open");
+            sidebar?.classList.add("collapsed");
+            target.classList.remove("visible");
+            menuButton?.setAttribute("aria-expanded", "false");
+        }
+        return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    if (!sidebar) return;
+
+    if (window.innerWidth <= 760 && target.id === "menuButton") {
+        const open = !sidebar.classList.contains("mobile-open");
+        sidebar.classList.toggle("mobile-open", open);
+        sidebar.classList.toggle("collapsed", !open);
+        mobileNavBackdrop?.classList.toggle("visible", open);
+        mobileNavBackdrop?.setAttribute("aria-hidden", String(!open));
+        menuButton?.setAttribute("aria-expanded", String(open));
+    } else if (window.innerWidth > 760 && target.id === "desktopMenuButton") {
+        sidebar.classList.toggle("collapsed");
+    }
+}, true);
