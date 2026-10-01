@@ -3646,12 +3646,25 @@ textSizeSelect.addEventListener(
 ======================================================== */
 
 if (menuButton && sidebar) {
+    if (window.innerWidth <= 760) {
+        sidebar.classList.add("collapsed");
+    }
+
     menuButton.addEventListener(
         "click",
         () => {
             sidebar.classList.toggle("collapsed");
         }
     );
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 760) {
+            sidebar.classList.remove("collapsed");
+        } else if (!sidebar.dataset.mobileInitialized) {
+            sidebar.classList.add("collapsed");
+            sidebar.dataset.mobileInitialized = "true";
+        }
+    });
 }
 
 newGrindButton.addEventListener(
