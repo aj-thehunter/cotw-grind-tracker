@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COTW Grind Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<div class="cloud-auth-bar">
+    <div class="cloud-auth-brand">
+        <span class="cloud-auth-label">☁ COTW ACCOUNT</span>
+        <span id="authStatus">Not signed in</span>
+    </div>
+
+    <button id="authOpenButton" class="auth-button">
+        Sign In
+    </button>
+    <button id="authSignOutButton" class="auth-button secondary hidden">
+        Sign Out
+    </button>
+</div>
+
+<div id="authModal" class="modal hidden">
+    <div class="modal-content auth-modal">
+        <div class="modal-header">
+            <div>
+                <h2>Sign in to COTW Grind Tracker</h2>
+                <p class="auth-subtitle">One account for your grinds, logs, settings, and Great Ones.</p>
+            </div>
+            <button id="closeAuthModalButton" class="close-button">×</button>
+        </div>
+
+        <div class="auth-provider-buttons">
+            <button id="googleAuthButton" class="provider-button google">
+                <span class="provider-icon">G</span>
+                Continue with Google
+            </button>
+        </div>
+
+        <div class="auth-divider"><span>OR</span></div>
+
+        <div class="auth-email-form">
+            <label for="authEmailInput">Continue with email</label>
+            <div class="auth-email-row">
+                <input id="authEmailInput" type="email" autocomplete="email" placeholder="you@example.com">
+                <button id="authEmailButton" class="auth-button">Continue</button>
+            </div>
+            <p class="auth-help">We'll email you a secure sign-in link. No password required.</p>
+        </div>
+    </div>
+</div>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <button id="menuButton" class="menu-button">☰</button>
+            <span>COTW TRACKER</span>
+        </div>
+
+        <button id="newGrindButton" class="new-grind-button">
+            ＋ New Grind
+        </button>
+
+        <button id="settingsButton" class="settings-button">
+            ⚙ Settings
+        </button>
+
+        <section class="grind-section">
+            <h3>ACTIVE GRINDS</h3>
+            <div id="activeGrinds"></div>
+        </section>
+
+        <section class="grind-section">
+            <h3>GRIND LOGS</h3>
+            <div id="completedGrinds"></div>
+        </section>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <div id="emptyState" class="empty-state">
+
+            <div class="empty-icon">🎯</div>
+
+            <h1>No Grind Selected</h1>
+
+            <p>
+                Create a new grind to start tracking your progress.
+            </p>
+
+            <button
+                id="emptyNewGrindButton"
+                class="new-grind-button"
+            >
+                ＋ Create New Grind
+            </button>
+
+        </div>
+
+
+        <div id="grindPage" class="hidden">
+
+            <header class="grind-header">
+
+                <div>
+
+                    <h1 id="grindSpecies">
+                        Species
+                    </h1>
+
+                    <p id="grindMap">
+                        Map
+                    </p>
+
+                </div>
+
+            </header>
+
+
+            <section class="counter-grid">
+
+                <div class="counter-card">
+
+                    <h2>TOTAL KILLS</h2>
+
+                    <div
+                        id="killsCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="counter-controls">
+
+                        <button
+                            onclick="changeCounter('kills', -1)"
+                        >
+                            −
+                        </button>
+
+                        <button
+                            onclick="changeCounter('kills', 1)"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="counter-card">
+
+                    <h2>DIAMONDS</h2>
+
+                    <div
+                        id="diamondsCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="counter-controls">
+
+                        <button
+                            onclick="changeCounter('diamonds', -1)"
+                        >
+                            −
+                        </button>
+
+                        <button
+                            onclick="changeCounter('diamonds', 1)"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="counter-card">
+
+                    <h2>DIAMOND RATE</h2>
+
+                    <div
+                        id="diamondRateCounter"
+                        class="counter-number rate-number"
+                    >
+                        —
+                    </div>
+
+                    <div class="rate-label">
+                        kills per diamond
+                    </div>
+
+                </div>
+
+
+                <div class="counter-card">
+
+                    <h2>TROLLS</h2>
+
+                    <div
+                        id="trollsCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="counter-controls">
+
+                        <button
+                            onclick="changeCounter('trolls', -1)"
+                        >
+                            −
+                        </button>
+
+                        <button
+                            onclick="changeCounter('trolls', 1)"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="counter-card rare-card">
+
+                    <h2>RARES</h2>
+
+                    <div
+                        id="raresCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                    <button
+                        id="rareToggle"
+                        class="expand-button"
+                    >
+                        ▼ Rare Breakdown
+                    </button>
+
+                    <div
+                        id="rareBreakdown"
+                        class="rare-breakdown hidden"
+                    ></div>
+
+                </div>
+
+
+                <div class="counter-card">
+
+                    <h2>SUPER RARES</h2>
+
+                    <div
+                        id="superRaresCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="counter-controls">
+
+                        <button
+                            onclick="changeCounter('superRares', -1)"
+                        >
+                            −
+                        </button>
+
+                        <button
+                            onclick="changeCounter('superRares', 1)"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="counter-card">
+
+                    <h2>GREAT ONES</h2>
+
+                    <div
+                        id="greatOnesCounter"
+                        class="counter-number"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <button
+                id="logGreatOneButton"
+                class="save-button log-go-main-button"
+            >
+                Log Great One & Complete Grind
+            </button>
+
+
+            <section
+                id="greatOneSection"
+                class="great-one-section"
+            >
+
+                <div class="section-title">
+
+                    <h2>
+                        Great One Details
+                    </h2>
+
+                    <p>
+                        Record the details of your Great One.
+                        Logging it will complete this grind.
+                    </p>
+
+                </div>
+
+
+                <div class="great-one-form">
+
+                    <div class="form-field">
+
+                        <label for="greatOneNameInput">
+                            Great One Name
+                        </label>
+
+                        <input
+                            id="greatOneNameInput"
+                            type="text"
+                            placeholder="Leave blank for automatic name"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label for="greatOneSpecies">
+                            Species
+                        </label>
+
+                        <input
+                            id="greatOneSpecies"
+                            type="text"
+                            disabled
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label
+                            id="furLabel"
+                            for="furSelect"
+                        >
+                            Fur
+                        </label>
+
+                        <select id="furSelect">
+
+                            <option value="">
+                                Select Fur
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        id="rackField"
+                        class="form-field hidden"
+                    >
+
+                        <label for="rackSelect">
+                            Rack
+                        </label>
+
+                        <select id="rackSelect">
+
+                            <option value="">
+                                Select Rack
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        id="whitetail5050Field"
+                        class="form-field hidden"
+                    >
+
+                        <label for="whitetail5050Input">
+                            50/50 Rack Details
+                        </label>
+
+                        <input
+                            id="whitetail5050Input"
+                            type="text"
+                            placeholder="Enter the racks making up the 50/50"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label for="weightInput">
+                            Weight
+                        </label>
+
+                        <div class="input-with-unit">
+
+                            <input
+                                id="weightInput"
+                                type="number"
+                                step="0.01"
+                                placeholder="Enter weight"
+                            >
+
+                            <span id="weightUnit">
+                                kg
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label for="scoreInput">
+                            Score
+                        </label>
+
+                        <input
+                            id="scoreInput"
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter score"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="great-one-records-section">
+
+                    <h2>
+                        Great One History
+                    </h2>
+
+                    <p class="history-description">
+                        Your logged Great Ones and their custom names are saved here.
+                    </p>
+
+                    <div id="greatOneRecords"></div>
+
+                </div>
+
+            </section>
+
+
+            <section class="unit-section">
+
+                <h2>
+                    Units
+                </h2>
+
+                <div class="unit-buttons">
+
+                    <button
+                        id="metricButton"
+                        class="unit-button active"
+                    >
+                        Metric (kg)
+                    </button>
+
+                    <button
+                        id="imperialButton"
+                        class="unit-button"
+                    >
+                        Imperial (lb)
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<div
+    id="newGrindModal"
+    class="modal hidden"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                Create New Grind
+            </h2>
+
+            <button
+                id="closeModalButton"
+                class="close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-field">
+
+            <label for="speciesSelect">
+                Species
+            </label>
+
+            <select id="speciesSelect">
+
+                <option value="">
+                    Select Species
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-field">
+
+            <label for="mapSelect">
+                Map
+            </label>
+
+            <select
+                id="mapSelect"
+                disabled
+            >
+
+                <option value="">
+                    Select a species first
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            id="createGrindButton"
+            class="save-button"
+        >
+            Create Grind
+        </button>
+
+    </div>
+
+</div>
+
+
+<div
+    id="settingsModal"
+    class="modal hidden"
+>
+
+    <div class="modal-content settings-modal">
+
+        <div class="modal-header">
+
+            <h2>
+                Settings
+            </h2>
+
+            <button
+                id="closeSettingsButton"
+                class="close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <section class="settings-section">
+
+            <h3>
+                Customization
+            </h3>
+
+            <div class="settings-grid">
+
+                <div class="form-field">
+
+                    <label for="accentColorInput">
+                        Accent Color
+                    </label>
+
+                    <input
+                        id="accentColorInput"
+                        type="color"
+                        value="#6a00ff"
+                    >
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="backgroundColorInput">
+                        Background Color
+                    </label>
+
+                    <input
+                        id="backgroundColorInput"
+                        type="color"
+                        value="#000000"
+                    >
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="cardColorInput">
+                        Card Color
+                    </label>
+
+                    <input
+                        id="cardColorInput"
+                        type="color"
+                        value="#111111"
+                    >
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="textSizeSelect">
+                        Text Size
+                    </label>
+
+                    <select id="textSizeSelect">
+
+                        <option value="small">
+                            Small
+                        </option>
+
+                        <option
+                            value="medium"
+                            selected
+                        >
+                            Medium
+                        </option>
+
+                        <option value="large">
+                            Large
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="settings-section">
+
+            <h3>
+                Keybinds
+            </h3>
+
+            <p class="settings-description">
+                Click a keybind and press the key you want to use.
+            </p>
+
+
+            <div class="keybind-list">
+
+                <div class="keybind-row">
+
+                    <span>
+                        Add Kill
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="addKill"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Remove Kill
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="removeKill"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Add Diamond
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="addDiamond"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Remove Diamond
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="removeDiamond"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Add Troll
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="addTroll"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Remove Troll
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="removeTroll"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Add Rare
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="addRare"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Add Super Rare
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="addSuperRare"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        Log Great One
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="logGreatOne"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="keybind-row">
+
+                    <span>
+                        New Grind
+                    </span>
+
+                    <input
+                        class="keybind-input"
+                        data-keybind="newGrind"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="settings-buttons">
+
+            <button
+                id="resetSettingsButton"
+                class="save-button"
+            >
+                Reset Settings
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="script.js?v=4"></script>
+
+</body>
+</html>
