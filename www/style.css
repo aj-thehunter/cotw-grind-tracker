@@ -1865,3 +1865,119 @@ body.text-large {
         padding-top: calc(74px + env(safe-area-inset-top)) !important;
     }
 }
+
+
+/* ========================================================
+   MOBILE NAV / ACCOUNT FINAL POLISH
+======================================================== */
+@media (max-width: 760px) {
+    /* Active grinds stack vertically instead of becoming a
+       horizontal scrolling row. */
+    #activeGrinds,
+    #completedGrinds {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        gap: 8px !important;
+        padding-bottom: 0 !important;
+    }
+
+    #activeGrinds .grind-list-item,
+    #completedGrinds .grind-list-item {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* The mobile account controls live visually in the same
+       top bar as the app name. */
+    .cloud-auth-bar {
+        position: fixed !important;
+        top: calc(9px + env(safe-area-inset-top)) !important;
+        right: 10px !important;
+        left: auto !important;
+        z-index: 2003 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 4px !important;
+        gap: 4px !important;
+        border: 1px solid var(--accent-color) !important;
+        border-radius: 8px !important;
+        background: var(--card-color) !important;
+        box-shadow: none !important;
+    }
+
+    .cloud-auth-brand {
+        display: none !important;
+    }
+
+    .cloud-auth-controls {
+        width: auto !important;
+        gap: 4px !important;
+    }
+
+    .cloud-auth-bar .auth-button {
+        min-height: 30px !important;
+        padding: 5px 8px !important;
+        border-color: var(--accent-color) !important;
+        border-radius: 6px !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
+        background: var(--accent-color) !important;
+        color: #ffffff !important;
+    }
+
+    .cloud-auth-bar .auth-button.secondary {
+        background: var(--card-color) !important;
+        color: var(--text-color) !important;
+        border-color: var(--accent-color) !important;
+    }
+
+    /* Match the hamburger to the user's customization colors. */
+    .mobile-topbar .menu-button {
+        background: var(--card-color) !important;
+        color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+    }
+
+    .mobile-topbar .menu-button:hover,
+    .mobile-topbar .menu-button:active {
+        background: var(--accent-color) !important;
+        color: #ffffff !important;
+        border-color: var(--accent-color) !important;
+    }
+
+    /* Keep the top bar visible, while the drawer starts below
+       it so the bar never covers the drawer contents. */
+    .mobile-nav-backdrop {
+        z-index: 1800 !important;
+    }
+
+    .mobile-topbar {
+        z-index: 2000 !important;
+    }
+
+    .sidebar,
+    .sidebar.collapsed,
+    .sidebar.mobile-open {
+        top: calc(58px + env(safe-area-inset-top)) !important;
+        bottom: 0 !important;
+        height: calc(100dvh - 58px - env(safe-area-inset-top)) !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        z-index: 2100 !important;
+        padding-top: 14px !important;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .sidebar.collapsed {
+        transform: translate3d(-105%, 0, 0) !important;
+    }
+
+    .sidebar.mobile-open {
+        transform: translate3d(0, 0, 0) !important;
+    }
+}
