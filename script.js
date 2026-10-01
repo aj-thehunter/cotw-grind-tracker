@@ -3664,7 +3664,7 @@ imperialButton.addEventListener(
 
 
 menuButton.addEventListener("click", () => {
-    const collapsed = sidebar.classList.toggle("sidebar-collapsed");
+    const collapsed = sidebar.classList.toggle("collapsed");
     menuButton.setAttribute("aria-expanded", String(!collapsed));
 });
 
