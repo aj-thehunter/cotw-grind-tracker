@@ -739,8 +739,16 @@ const SETTINGS_STORAGE_KEY =
 const UNIT_STORAGE_KEY =
     "cotwUnit";
 
+const DELETED_GRINDS_STORAGE_KEY =
+    "cotwDeletedGrinds";
+
 
 function saveGrinds() {
+
+    localStorage.setItem(
+        DELETED_GRINDS_STORAGE_KEY,
+        JSON.stringify(settings.deletedGrindIds || [])
+    );
 
     const currentGrind = getCurrentGrind();
 
@@ -1134,6 +1142,14 @@ function deleteGrind(grindId) {
     grinds =
         grinds.filter(item => item.id !== grindId);
 
+    if (!Array.isArray(settings.deletedGrindIds)) {
+        settings.deletedGrindIds = [];
+    }
+
+    if (!settings.deletedGrindIds.includes(grindId)) {
+        settings.deletedGrindIds.push(grindId);
+    }
+
     if (currentGrindId === grindId) {
         const replacement =
             grinds.find(item => !item.completed) ||
@@ -1145,6 +1161,12 @@ function deleteGrind(grindId) {
     }
 
     saveGrinds();
+
+    /* Push deletions immediately so a quick refresh cannot
+       let an older cloud copy resurrect the deleted grind. */
+    if (currentUser) {
+        void syncToCloud();
+    }
 
     updateAll();
 
@@ -3280,6 +3302,8 @@ function resetSettings() {
 
         textSize: "medium",
 
+        deletedGrindIds: [],
+
         keybinds: {
 
             addKill: "K",
@@ -3921,7 +3945,7 @@ function scheduleCloudSync() {
    local version when it contains data, which prevents an
    empty/new device from replacing an existing grind.
 */
-function mergeGrinds(localGrinds, cloudGrinds) {
+function mergeGrinds(localGrinds, cloudGrinds, deletedGrindIds = []) {
 
     const local = Array.isArray(localGrinds)
         ? localGrinds
@@ -3963,7 +3987,14 @@ function mergeGrinds(localGrinds, cloudGrinds) {
         }
     });
 
-    return Array.from(byId.values());
+    const deleted = new Set(
+        Array.isArray(deletedGrindIds)
+            ? deletedGrindIds.map(id => String(id))
+            : []
+    );
+
+    return Array.from(byId.values())
+        .filter(grind => !deleted.has(String(grind.id)));
 }
 
 
@@ -4067,8 +4098,27 @@ async function loadCloudData(user) {
                 ? data.grinds
                 : [];
 
+            const localDeleted = Array.isArray(settings.deletedGrindIds)
+                ? settings.deletedGrindIds
+                : [];
+
+            const cloudDeleted = Array.isArray(data.settings?.deletedGrindIds)
+                ? data.settings.deletedGrindIds
+                : [];
+
+            settings.deletedGrindIds = Array.from(
+                new Set([
+                    ...localDeleted,
+                    ...cloudDeleted
+                ])
+            );
+
             const mergedGrinds =
-                mergeGrinds(localGrinds, cloudGrinds);
+                mergeGrinds(
+                    localGrinds,
+                    cloudGrinds,
+                    settings.deletedGrindIds
+                );
 
             /*
                If this device has the user's existing local
@@ -4138,6 +4188,11 @@ async function loadCloudData(user) {
             localStorage.setItem(
                 GRINDS_STORAGE_KEY,
                 JSON.stringify(grinds)
+            );
+
+            localStorage.setItem(
+                DELETED_GRINDS_STORAGE_KEY,
+                JSON.stringify(settings.deletedGrindIds || [])
             );
 
             if (normalizeGreatOneNames()) {
