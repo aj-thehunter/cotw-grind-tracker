@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">COTW Grind Tracker</string>
+    <string name="title_activity_main">COTW Grind Tracker</string>
+    <string name="package_name">com.ajthehunter.cotwgrindtracker</string>
+    <string name="custom_url_scheme">com.ajthehunter.cotwgrindtracker</string>
+</resources>
