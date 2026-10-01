@@ -635,6 +635,12 @@ const imperialButton =
 const settingsButton =
     document.getElementById("settingsButton");
 
+const menuButton =
+    document.getElementById("menuButton");
+
+const sidebar =
+    document.querySelector(".sidebar");
+
 const settingsModal =
     document.getElementById("settingsModal");
 
@@ -3656,6 +3662,11 @@ imperialButton.addEventListener(
     () => setUnit("imperial")
 );
 
+
+menuButton.addEventListener("click", () => {
+    const collapsed = sidebar.classList.toggle("sidebar-collapsed");
+    menuButton.setAttribute("aria-expanded", String(!collapsed));
+});
 
 settingsButton.addEventListener(
     "click",
