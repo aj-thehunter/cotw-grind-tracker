@@ -4469,3 +4469,17 @@ document.addEventListener("pointerdown", event => {
         sidebar.classList.toggle("collapsed");
     }
 }, true);
+
+
+/* Close the mobile sidebar after selecting anything inside it. */
+document.addEventListener("click", event => {
+    if (window.innerWidth > 760 || !sidebar) return;
+
+    const clickedInsideSidebar = event.target.closest(".sidebar");
+    if (!clickedInsideSidebar) return;
+
+    const clickedMenuButton = event.target.closest("#desktopMenuButton, #menuButton");
+    if (clickedMenuButton) return;
+
+    setMobileNavigation(false);
+});
