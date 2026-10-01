@@ -4444,6 +4444,14 @@ initializeCloudSync();
    cannot lose their click handlers because of other scripts.
 ======================================================== */
 document.addEventListener("pointerdown", event => {
+    if (sidebar && window.innerWidth <= 760) {
+        const sidebarItem = event.target.closest(".sidebar");
+        const menuControl = event.target.closest("#menuButton, #desktopMenuButton");
+        if (sidebarItem && !menuControl) {
+            setMobileNavigation(false);
+        }
+    }
+
     const target = event.target.closest(
         "#menuButton, #desktopMenuButton, #mobileNavBackdrop"
     );
@@ -4470,16 +4478,3 @@ document.addEventListener("pointerdown", event => {
     }
 }, true);
 
-
-/* Close the mobile sidebar after selecting anything inside it. */
-document.addEventListener("click", event => {
-    if (window.innerWidth > 760 || !sidebar) return;
-
-    const clickedInsideSidebar = event.target.closest(".sidebar");
-    if (!clickedInsideSidebar) return;
-
-    const clickedMenuButton = event.target.closest("#desktopMenuButton, #menuButton");
-    if (clickedMenuButton) return;
-
-    setMobileNavigation(false);
-});
