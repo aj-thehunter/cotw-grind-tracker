@@ -699,6 +699,8 @@ let settings = {
 
     textSize: "medium",
 
+    deletedGrindIds: [],
+
     keybinds: {
 
         addKill: "K",
@@ -1055,6 +1057,22 @@ function loadGrinds() {
 
     });
 
+
+    /* Never reload a grind that this device has explicitly deleted. */
+    const deletedIds = new Set(
+        Array.isArray(settings.deletedGrindIds)
+            ? settings.deletedGrindIds.map(id => String(id))
+            : []
+    );
+
+    const filteredGrinds = grinds.filter(
+        grind => !deletedIds.has(String(grind.id))
+    );
+
+    if (filteredGrinds.length !== grinds.length) {
+        grinds = filteredGrinds;
+        needsSave = true;
+    }
 
     if (normalizeGreatOneNames()) {
         needsSave = true;
