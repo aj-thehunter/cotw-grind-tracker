@@ -1,10 +1,11 @@
-const CACHE_NAME = "cotw-grind-tracker-v8";
+const CACHE_NAME = "cotw-grind-tracker-v9";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css?v=8",
   "./script.js?v=8",
-  "./favicon.svg"
+  "./favicon.svg",
+  "./manifest.webmanifest"
 ];
 
 self.addEventListener("install", event => {
