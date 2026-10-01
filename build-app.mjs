@@ -3,7 +3,7 @@ import { cp, mkdir, rm } from "node:fs/promises";
 await rm("www", { recursive: true, force: true });
 await mkdir("www", { recursive: true });
 
-for (const file of ["index.html", "style.css", "script.js", "service-worker.js", "favicon.svg"]) {
+for (const file of ["index.html", "style.css", "script.js", "service-worker.js", "favicon.svg", "manifest.webmanifest"]) {
   await cp(file, "www/" + file);
 }
 
