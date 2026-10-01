@@ -3667,6 +3667,18 @@ if (menuButton && sidebar) {
     });
 }
 
+if (sidebar) {
+    document.addEventListener("click", event => {
+        if (
+            window.innerWidth <= 760 &&
+            !sidebar.classList.contains("collapsed") &&
+            !sidebar.contains(event.target)
+        ) {
+            sidebar.classList.add("collapsed");
+        }
+    });
+}
+
 newGrindButton.addEventListener(
     "click",
     openNewGrindModal
