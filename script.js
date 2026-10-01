@@ -3666,37 +3666,12 @@ function setMobileNavigation(open) {
 }
 
 if (sidebar) {
-    const handleMobileMenu = event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (window.innerWidth <= 760) {
-            setMobileNavigation(
-                !sidebar.classList.contains("mobile-open")
-            );
-        }
-    };
-
-    const handleDesktopMenu = event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (window.innerWidth > 760) {
-            sidebar.classList.toggle("collapsed");
-        }
-    };
-
-    menuButton?.addEventListener("click", handleMobileMenu);
-    desktopMenuButton?.addEventListener("click", handleDesktopMenu);
-
-    mobileNavBackdrop?.addEventListener("click", () => {
-        setMobileNavigation(false);
-    });
-
     window.addEventListener("resize", () => {
         if (window.innerWidth > 760) {
             sidebar.classList.remove("mobile-open");
+            sidebar.classList.remove("collapsed");
             mobileNavBackdrop?.classList.remove("visible");
+            mobileNavBackdrop?.setAttribute("aria-hidden", "true");
             menuButton?.setAttribute("aria-expanded", "false");
         } else if (!sidebar.classList.contains("mobile-open")) {
             sidebar.classList.add("collapsed");
@@ -4468,38 +4443,29 @@ initializeCloudSync();
    Uses event delegation so desktop and mobile menu buttons
    cannot lose their click handlers because of other scripts.
 ======================================================== */
-document.addEventListener("click", event => {
+document.addEventListener("pointerdown", event => {
     const target = event.target.closest(
         "#menuButton, #desktopMenuButton, #mobileNavBackdrop"
     );
 
-    if (!target) return;
-
-    if (target.id === "mobileNavBackdrop") {
-        if (window.innerWidth <= 760) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            sidebar?.classList.remove("mobile-open");
-            sidebar?.classList.add("collapsed");
-            target.classList.remove("visible");
-            menuButton?.setAttribute("aria-expanded", "false");
-        }
-        return;
-    }
+    if (!target || !sidebar) return;
 
     event.preventDefault();
     event.stopImmediatePropagation();
 
-    if (!sidebar) return;
+    if (target.id === "mobileNavBackdrop") {
+        if (window.innerWidth <= 760) {
+            setMobileNavigation(false);
+        }
+        return;
+    }
 
     if (window.innerWidth <= 760 && target.id === "menuButton") {
-        const open = !sidebar.classList.contains("mobile-open");
-        sidebar.classList.toggle("mobile-open", open);
-        sidebar.classList.toggle("collapsed", !open);
-        mobileNavBackdrop?.classList.toggle("visible", open);
-        mobileNavBackdrop?.setAttribute("aria-hidden", String(!open));
-        menuButton?.setAttribute("aria-expanded", String(open));
-    } else if (window.innerWidth > 760 && target.id === "desktopMenuButton") {
+        setMobileNavigation(!sidebar.classList.contains("mobile-open"));
+        return;
+    }
+
+    if (window.innerWidth > 760 && target.id === "desktopMenuButton") {
         sidebar.classList.toggle("collapsed");
     }
 }, true);
