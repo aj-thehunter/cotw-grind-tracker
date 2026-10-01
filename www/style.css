@@ -946,11 +946,13 @@ body.text-large {
 
 @media (max-width: 760px) {
     .cloud-auth-bar {
-        left: 10px;
+        left: auto;
         right: 10px;
-        top: 10px;
-        flex-direction: column;
-        align-items: stretch;
+        top: 68px;
+        max-width: calc(100vw - 20px);
+        flex-direction: row;
+        align-items: center;
+        z-index: 1100;
     }
 
     .cloud-auth-controls {
@@ -1718,8 +1720,8 @@ body.text-large {
     }
 
     .mobile-app-title {
-        color: var(--text-color);
-        font-size: 17px;
+        color: var(--accent-color);
+        font-size: 20px;
         font-weight: 800;
         line-height: 1;
         text-align: center;
@@ -1749,17 +1751,6 @@ body.text-large {
         padding-top: calc(14px + env(safe-area-inset-top));
         padding-bottom: calc(14px + env(safe-area-inset-bottom));
         transform: translateX(-105%);
-    }
-
-    .sidebar::after {
-        position: fixed;
-        left: 100%;
-        top: 0;
-        width: 100vw;
-        height: 100dvh;
-        background: rgba(0, 0, 0, 0.62);
-        z-index: -1;
-        pointer-events: none;
     }
 
     .sidebar .sidebar-header .menu-button {
