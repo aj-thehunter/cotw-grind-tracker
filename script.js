@@ -3080,7 +3080,13 @@ function updateSidebar() {
 
         button.addEventListener(
             "click",
-            () => selectGrind(grind.id)
+            () => {
+                selectGrind(grind.id);
+
+                if (window.innerWidth <= 760) {
+                    setMobileNavigation(false);
+                }
+            }
         );
 
         const deleteButton =
