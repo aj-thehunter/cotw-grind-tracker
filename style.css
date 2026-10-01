@@ -1223,3 +1223,267 @@ body.text-large {
         font-size: 10px;
     }
 }
+
+
+/* ========================================================
+   IPHONE FIRST MOBILE LAYOUT
+======================================================== */
+
+@media (max-width: 760px) {
+    html, body {
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .app {
+        display: block;
+        min-height: 100dvh;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        padding: 12px 14px;
+        border-right: none;
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    .sidebar-header {
+        margin-bottom: 10px;
+        font-size: 17px;
+    }
+
+    .menu-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .new-grind-button,
+    .settings-button {
+        min-height: 44px;
+    }
+
+    .grind-section {
+        margin-top: 14px;
+    }
+
+    #activeGrinds,
+    #completedGrinds {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 3px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .grind-list-item {
+        flex: 0 0 180px;
+        min-height: 56px;
+    }
+
+    .main-content {
+        width: 100%;
+        padding: 16px 12px 28px;
+    }
+
+    .grind-header {
+        margin-bottom: 14px;
+        padding-right: 58px;
+    }
+
+    .grind-header h1 {
+        font-size: 24px;
+        line-height: 1.15;
+    }
+
+    .grind-header p {
+        font-size: 13px;
+    }
+
+    .counter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-bottom: 14px;
+    }
+
+    .counter-card {
+        min-height: 142px;
+        padding: 12px 8px;
+        border-radius: 9px;
+    }
+
+    .counter-card h2 {
+        font-size: 10px;
+        letter-spacing: .8px;
+        margin-bottom: 9px;
+    }
+
+    .counter-number {
+        font-size: 31px;
+    }
+
+    .rate-number {
+        font-size: 22px;
+    }
+
+    .rate-label {
+        font-size: 9px;
+        margin-top: 6px;
+    }
+
+    .counter-controls {
+        gap: 7px;
+        margin-top: 11px;
+    }
+
+    .counter-controls button {
+        width: 40px;
+        height: 36px;
+        font-size: 20px;
+    }
+
+    .expand-button {
+        margin-top: 9px;
+        font-size: 10px;
+    }
+
+    .rare-breakdown {
+        max-height: 125px;
+        margin-top: 8px;
+        padding-top: 7px;
+    }
+
+    .rare-breakdown-row {
+        padding: 4px 0;
+        font-size: 10px;
+    }
+
+    .log-go-main-button {
+        width: 100%;
+        min-height: 48px;
+        margin-bottom: 14px;
+    }
+
+    .great-one-section,
+    .unit-section {
+        padding: 15px;
+        margin-bottom: 14px;
+        border-radius: 9px;
+    }
+
+    .section-title {
+        margin-bottom: 15px;
+    }
+
+    .section-title h2,
+    .great-one-records-section h2,
+    .unit-section h2 {
+        font-size: 18px;
+    }
+
+    .section-title p,
+    .history-description {
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    .great-one-form {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-field input,
+    .form-field select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    .great-one-records-section {
+        margin-top: 20px;
+        padding-top: 17px;
+    }
+
+    .great-one-record {
+        padding: 12px;
+    }
+
+    .great-one-record-header {
+        gap: 9px;
+    }
+
+    .great-one-record-name {
+        font-size: 15px;
+    }
+
+    .great-one-detail {
+        font-size: 12px;
+    }
+
+    .unit-section {
+        align-items: stretch;
+    }
+
+    .unit-buttons {
+        width: 100%;
+    }
+
+    .unit-button {
+        flex: 1;
+        min-height: 42px;
+    }
+
+    .modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: 92dvh;
+        border-radius: 16px 16px 0 0;
+        padding: 18px 15px calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .modal-header {
+        margin-bottom: 18px;
+    }
+
+    .close-button {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+@media (max-width: 420px) {
+    .counter-grid {
+        gap: 7px;
+    }
+
+    .counter-card {
+        min-height: 134px;
+        padding: 10px 6px;
+    }
+
+    .counter-number {
+        font-size: 28px;
+    }
+
+    .counter-controls button {
+        width: 38px;
+        height: 34px;
+    }
+
+    .main-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
