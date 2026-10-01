@@ -1623,7 +1623,7 @@ body.text-large {
         width: 100vw;
         height: 100dvh;
         background: rgba(0, 0, 0, 0.58);
-        z-index: -1;
+        z-index: 0;
         pointer-events: none;
     }
 
@@ -1635,6 +1635,11 @@ body.text-large {
         padding: 14px;
         transform: translateX(-105%);
         overflow: visible;
+    }
+
+    .sidebar > * {
+        position: relative;
+        z-index: 1;
     }
 
     .sidebar.collapsed .sidebar-header {
