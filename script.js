@@ -3645,37 +3645,57 @@ textSizeSelect.addEventListener(
    EVENT LISTENERS
 ======================================================== */
 
-if (menuButton && sidebar) {
-    if (window.innerWidth <= 760) {
-        sidebar.classList.add("collapsed");
+const mobileNavBackdrop =
+    document.getElementById("mobileNavBackdrop");
+
+function setMobileNavigation(open) {
+    if (!sidebar || !menuButton) return;
+
+    const isMobile = window.innerWidth <= 760;
+
+    if (!isMobile) {
+        sidebar.classList.remove("collapsed", "mobile-open");
+        mobileNavBackdrop?.classList.remove("visible");
+        menuButton.setAttribute("aria-expanded", "false");
+        return;
     }
 
-    menuButton.addEventListener(
-        "click",
-        () => {
+    sidebar.classList.toggle("mobile-open", open);
+    sidebar.classList.toggle("collapsed", !open);
+
+    if (mobileNavBackdrop) {
+        mobileNavBackdrop.classList.toggle("visible", open);
+        mobileNavBackdrop.setAttribute("aria-hidden", String(!open));
+    }
+
+    menuButton.setAttribute("aria-expanded", String(open));
+}
+
+if (menuButton && sidebar) {
+    setMobileNavigation(false);
+
+    menuButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (window.innerWidth <= 760) {
+            setMobileNavigation(
+                !sidebar.classList.contains("mobile-open")
+            );
+        } else {
             sidebar.classList.toggle("collapsed");
         }
-    );
+    });
+
+    mobileNavBackdrop?.addEventListener("click", () => {
+        setMobileNavigation(false);
+    });
 
     window.addEventListener("resize", () => {
         if (window.innerWidth > 760) {
-            sidebar.classList.remove("collapsed");
-        } else if (!sidebar.dataset.mobileInitialized) {
-            sidebar.classList.add("collapsed");
-            sidebar.dataset.mobileInitialized = "true";
-        }
-    });
-}
-
-if (sidebar) {
-    document.addEventListener("click", event => {
-        if (
-            window.innerWidth <= 760 &&
-            !sidebar.classList.contains("collapsed") &&
-            !sidebar.contains(event.target) &&
-            !menuButton.contains(event.target)
-        ) {
-            sidebar.classList.add("collapsed");
+            setMobileNavigation(false);
+        } else if (!sidebar.classList.contains("mobile-open")) {
+            setMobileNavigation(false);
         }
     });
 }
