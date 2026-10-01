@@ -4703,6 +4703,29 @@ if (!localStorage.getItem("cotwHasLaunched")) {
 hideAppSplash();
 
 /* ========================================================
+   NATIVE APP BACK BUTTON
+======================================================== */
+window.cotwHandleNativeBack = function () {
+    if (window.innerWidth <= 760 && sidebar?.classList.contains("mobile-open")) {
+        setMobileNavigation(false);
+        return true;
+    }
+    if (newGrindModal && !newGrindModal.classList.contains("hidden")) {
+        closeNewGrindModal();
+        return true;
+    }
+    if (settingsModal && !settingsModal.classList.contains("hidden")) {
+        closeSettings();
+        return true;
+    }
+    if (authModal && !authModal.classList.contains("hidden")) {
+        closeAuthModal();
+        return true;
+    }
+    return false;
+};
+
+/* ========================================================
    FINAL NAVIGATION CONTROLLER
    Uses event delegation so desktop and mobile menu buttons
    cannot lose their click handlers because of other scripts.
