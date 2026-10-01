@@ -3663,11 +3663,6 @@ imperialButton.addEventListener(
 );
 
 
-menuButton.addEventListener("click", () => {
-    const collapsed = sidebar.classList.toggle("collapsed");
-    menuButton.setAttribute("aria-expanded", String(!collapsed));
-});
-
 settingsButton.addEventListener(
     "click",
     openSettings
