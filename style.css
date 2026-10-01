@@ -1617,18 +1617,6 @@ body.text-large {
         transition: transform 0.24s ease;
     }
 
-    .sidebar::after {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 100%;
-        width: 100vw;
-        height: 100dvh;
-        background: rgba(0, 0, 0, 0.58);
-        z-index: 0;
-        pointer-events: none;
-    }
-
     .sidebar.collapsed {
         width: min(84vw, 340px);
         min-width: min(84vw, 340px);
@@ -1688,7 +1676,7 @@ body.text-large {
         top: 0;
         left: 0;
         right: 0;
-        z-index: 1200;
+        z-index: 1500;
         height: 58px;
         display: flex;
         align-items: center;
@@ -1713,6 +1701,8 @@ body.text-large {
         color: var(--text-color);
         font-size: 24px;
         line-height: 1;
+        z-index: 1501;
+        pointer-events: auto;
     }
 
     .mobile-topbar .menu-button:active {
