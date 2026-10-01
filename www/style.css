@@ -1588,3 +1588,85 @@ body.text-large {
         margin-bottom: 0;
     }
 }
+
+
+/* ========================================================
+   MOBILE SLIDE-OUT NAV DRAWER
+   Desktop sidebar remains unchanged.
+======================================================== */
+@media (max-width: 760px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1100;
+        width: min(84vw, 340px);
+        min-width: min(84vw, 340px);
+        height: 100dvh;
+        min-height: 100dvh;
+        padding: 14px;
+        border-right: 1px solid var(--accent-color);
+        border-bottom: none;
+        transform: translateX(0);
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: 14px 0 40px rgba(0, 0, 0, 0.55);
+        transition: transform 0.24s ease;
+    }
+
+    .sidebar::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 100%;
+        width: 100vw;
+        height: 100dvh;
+        background: rgba(0, 0, 0, 0.58);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .sidebar.collapsed {
+        width: min(84vw, 340px);
+        min-width: min(84vw, 340px);
+        height: 100dvh;
+        min-height: 100dvh;
+        padding: 14px;
+        transform: translateX(-105%);
+        overflow: visible;
+    }
+
+    .sidebar > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        margin-bottom: 20px;
+    }
+
+    .sidebar.collapsed .sidebar-header span,
+    .sidebar.collapsed > .new-grind-button,
+    .sidebar.collapsed > .settings-button,
+    .sidebar.collapsed > .grind-section {
+        display: block;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        justify-content: flex-start;
+    }
+
+    .sidebar.collapsed .menu-button {
+        flex-shrink: 0;
+    }
+
+    .main-content {
+        width: 100%;
+        padding-top: 72px;
+    }
+
+    .sidebar:not(.collapsed) + .main-content {
+        pointer-events: auto;
+    }
+}
