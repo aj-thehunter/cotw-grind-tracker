@@ -4691,7 +4691,7 @@ if (!localStorage.getItem("cotwHasLaunched")) {
     }
 }
 
-hideAppSplash();
+/* Mobile loading splash removed. */
 
 /* ========================================================
    FINAL NAVIGATION CONTROLLER
