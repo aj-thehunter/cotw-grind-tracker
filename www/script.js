@@ -3080,13 +3080,7 @@ function updateSidebar() {
 
         button.addEventListener(
             "click",
-            () => {
-                selectGrind(grind.id);
-
-                if (window.innerWidth <= 760) {
-                    setMobileNavigation(false);
-                }
-            }
+            () => selectGrind(grind.id)
         );
 
         const deleteButton =
@@ -4420,6 +4414,30 @@ async function initializeCloudSync() {
     );
 
 }
+
+
+/* ========================================================
+   MOBILE SIDEBAR ITEM CLOSE
+   Let the grind's normal click handler finish first, then
+   close the drawer. This prevents the drawer from swallowing
+   the grind selection.
+======================================================== */
+
+document.addEventListener("click", event => {
+    if (window.innerWidth > 760 || !sidebar) {
+        return;
+    }
+
+    const grindItem = event.target.closest(".grind-list-item");
+
+    if (!grindItem || !sidebar.contains(grindItem)) {
+        return;
+    }
+
+    setTimeout(() => {
+        setMobileNavigation(false);
+    }, 0);
+});
 
 
 /* ========================================================
