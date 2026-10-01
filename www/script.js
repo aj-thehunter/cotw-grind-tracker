@@ -638,6 +638,9 @@ const settingsButton =
 const menuButton =
     document.getElementById("menuButton");
 
+const desktopMenuButton =
+    document.getElementById("desktopMenuButton");
+
 const sidebar =
     document.querySelector(".sidebar");
 
@@ -3651,15 +3654,6 @@ const mobileNavBackdrop =
 function setMobileNavigation(open) {
     if (!sidebar || !menuButton) return;
 
-    const isMobile = window.innerWidth <= 760;
-
-    if (!isMobile) {
-        sidebar.classList.remove("collapsed", "mobile-open");
-        mobileNavBackdrop?.classList.remove("visible");
-        menuButton.setAttribute("aria-expanded", "false");
-        return;
-    }
-
     sidebar.classList.toggle("mobile-open", open);
     sidebar.classList.toggle("collapsed", !open);
 
@@ -3671,10 +3665,8 @@ function setMobileNavigation(open) {
     menuButton.setAttribute("aria-expanded", String(open));
 }
 
-if (menuButton && sidebar) {
-    setMobileNavigation(false);
-
-    menuButton.addEventListener("click", event => {
+if (sidebar) {
+    const handleMobileMenu = event => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -3682,10 +3674,20 @@ if (menuButton && sidebar) {
             setMobileNavigation(
                 !sidebar.classList.contains("mobile-open")
             );
-        } else {
+        }
+    };
+
+    const handleDesktopMenu = event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (window.innerWidth > 760) {
             sidebar.classList.toggle("collapsed");
         }
-    });
+    };
+
+    menuButton?.addEventListener("click", handleMobileMenu);
+    desktopMenuButton?.addEventListener("click", handleDesktopMenu);
 
     mobileNavBackdrop?.addEventListener("click", () => {
         setMobileNavigation(false);
@@ -3693,13 +3695,18 @@ if (menuButton && sidebar) {
 
     window.addEventListener("resize", () => {
         if (window.innerWidth > 760) {
-            setMobileNavigation(false);
+            sidebar.classList.remove("mobile-open");
+            mobileNavBackdrop?.classList.remove("visible");
+            menuButton?.setAttribute("aria-expanded", "false");
         } else if (!sidebar.classList.contains("mobile-open")) {
-            setMobileNavigation(false);
+            sidebar.classList.add("collapsed");
         }
     });
-}
 
+    if (window.innerWidth <= 760) {
+        sidebar.classList.add("collapsed");
+    }
+}
 newGrindButton.addEventListener(
     "click",
     openNewGrindModal
