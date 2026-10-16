@@ -1,0 +1,30 @@
+COTW Grind Tracker — Project Summary
+
+Project layout and important files
+- index.html: Defines the website UI, including navigation, grind counters, Great One/Super Rare forms, settings, authentication, and backup dialogs.
+- script.js: Main application logic. It manages grind state, counters and rates, species/map/rare/Great One data, settings and keybinds, backup import/export, authentication, local persistence, and Supabase sync.
+- style.css: Visual design, themes, and responsive desktop/mobile layouts.
+- manifest.webmanifest and service-worker.js: PWA metadata and offline app-shell caching for supported browsers.
+- build-app.mjs: Copies the root web assets into www/ for Capacitor.
+- www/: Generated web app copy used by Capacitor. At inspection, its HTML, CSS, JavaScript, manifest, and service worker match the corresponding root files.
+- package.json / package-lock.json: Node scripts and Capacitor dependencies.
+- capacitor.config.ts: Capacitor app identity and web directory configuration.
+- android/ and ios/: Native Android and iOS Capacitor project shells, assets, and platform settings.
+- README.md: Currently contains only the project title; it does not explain setup.
+
+How the website works
+The app is implemented directly in HTML, CSS, and JavaScript; it does not use a frontend framework. On startup, script.js loads saved grinds, settings, and units from browser localStorage, initializes the species selector, applies the saved theme, and renders the sidebar and selected grind. Users create grinds by choosing a species and map. Each grind tracks kills, diamonds, trolls, rare breakdowns, Super Rares, Great Ones, completion, and records. The app calculates diamond and rare rates, supports keyboard shortcuts and editable counters, and lets users manage Great One details/history. Settings include colors, text size, keybinds, and units. JSON backups can be exported and restored.
+
+Data is stored locally under keys including cotwGrinds, cotwSettings, and cotwUnit. The optional account UI supports Google OAuth and email magic links through Supabase. Signed-in data is read from and upserted to a user_grinds table, including grinds, selected grind, unit, and settings. Merge logic combines local and cloud grinds and tracks deleted grind IDs. The repository contains no database schema or migrations, so the Supabase table and access policies must be configured externally. A service worker caches the website app shell for offline browsing; local tracker data remains available offline, while cloud sync requires connectivity.
+
+Mobile app configuration
+Capacitor packages the same web app from www/; tracker features are not separately implemented in native code. The app ID is com.ajthehunter.cotwgrindtracker and the display name is COTW Grind Tracker. Android uses a Capacitor BridgeActivity and INTERNET permission. iOS uses the Capacitor bridge view controller and includes app icon and splash assets. Responsive behavior is implemented in the shared website CSS and JavaScript.
+
+Obvious issues / points to verify
+- index.html references favicon.png, and manifest.webmanifest also declares favicon.png as its icon, but build-app.mjs does not copy favicon.png into www/. A fresh build therefore omits a referenced web icon. The build does copy favicon.svg.
+- index.html contains an unmatched closing </div> immediately after the opening <body>. Browsers may repair the markup, but it is malformed and worth correcting deliberately in a future change.
+- initializeCloudSync() is called once during normal startup and again inside createGrind(). Each call registers a Supabase auth-state listener, so creating grinds can accumulate duplicate listeners and cloud-load work.
+- Supabase's JavaScript client is loaded from jsDelivr in index.html. If it is unavailable, local tracking can still work, but account/cloud functionality cannot initialize; the service worker app shell does not include that external CDN script.
+- Supabase integration expects the externally configured user_grinds table and suitable row-level access policies; no schema or policy files were found in the project.
+
+No project files were changed during inspection. This summary file was created at the user's request.
