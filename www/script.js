@@ -698,6 +698,7 @@ let currentUnit = "metric";
 let cloudSyncTimer = null;
 let suppressCloudSync = false;
 let currentUser = null;
+let cloudAuthListenerRegistered = false;
 
 const SUPABASE_URL =
     "https://qfldvmxoandrvoyzvwhy.supabase.co";
@@ -4624,6 +4625,12 @@ async function initializeCloudSync() {
     }
 
     updateAuthUI();
+
+    if (cloudAuthListenerRegistered) {
+        return;
+    }
+
+    cloudAuthListenerRegistered = true;
 
     supabaseClient.auth.onAuthStateChange(
         (_event, session) => {
