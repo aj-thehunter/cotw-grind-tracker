@@ -73,7 +73,7 @@ const greatOneData = {
             "Fabled Hooded",
             "Fabled Mocha",
             "Fabled Painted",
-            "Painted Silver"
+            "Fabled Silver"
         ]
     },
 
